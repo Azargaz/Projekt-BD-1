@@ -23,6 +23,9 @@ const useStyles = makeStyles(theme => ({
     title: {
         flexGrow: 1,
     },
+    horizontalRuler: {
+        border: "1px solid rgba(0, 0, 0, 0.2)",
+    },
 }));
 
 function NavBar() {
@@ -66,6 +69,8 @@ function NavBar() {
                     open={open}
                     onClose={handleClose}
                 >
+                    <MenuItem component="h2">Akcje administratora</MenuItem>
+                    <hr className={classes.horizontalRuler}/>
                     <MenuItem component={Link} to="/admin/gra" onClick={handleClose}>Tabela Gra</MenuItem>
                 </Menu>
             </React.Fragment>
@@ -75,7 +80,7 @@ function NavBar() {
     const authBar = (
         authenticated ? (
             <React.Fragment>
-                {decodedToken.id_uzytkownik && (<Button color="inherit" component={Link} to={`/uzytkownik/${decodedToken.id_uzytkownik}/lista`}>Lista gier</Button>)}
+                {decodedToken && (<Button color="inherit" component={Link} to={`/uzytkownik/lista/${decodedToken.id_uzytkownik}`}>Lista gier</Button>)}
                 <Button color="inherit" onClick={unauthenticate} component={Link} to="/">Wyloguj się</Button>
             </React.Fragment>    
         ) : (

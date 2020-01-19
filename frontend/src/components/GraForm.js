@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react'
 
+import fetchData from '../utils/fetchData';
+
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
+import FormControl from '@material-ui/core/FormControl';
+
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import MuiAlert from '@material-ui/lab/Alert';
 
-import DetailsSelect from './DetailsSelect';
+import DetaleSelect from './DetaleSelect';
+import DetaleTransferList from './DetaleTransferList';
+import DetaleCheckboxList from './DetaleCheckboxList';
 
 const useStyles = makeStyles(theme => ({
     form: {
@@ -31,13 +37,13 @@ function Alert(props) {
 function GraForm() {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
-    const [game, setGame] = useState({
+    const [gra, setGra] = useState({
         tytul: "",
         opis: "",
         data_wydania: "",
         kategoria_wiekowa: ""
     });
-    const [details, setDetails] = useState({
+    const [detale, setDetale] = useState({
         id_gatunek: "",
         id_producent: "",
         id_wydawca: "",
@@ -54,14 +60,10 @@ function GraForm() {
 
     const fetchDetails = () => {
         setLoading(true);
-        fetch('http://localhost:3001/detale')
-            .then((response) => {
-                return response.json();
-            })
-            .then((jsonData) => {
-                setFetchedDetails(jsonData);
-                setLoading(false);
-            });
+        fetchData('GET', 'gra/detale', (json) => {
+            setFetchedDetails(json);
+            setLoading(false);
+        });
     }
 
     useEffect(() => {
@@ -69,14 +71,14 @@ function GraForm() {
     }, [])
 
     const clearForm = () => {
-        setGame({
+        setGra({
             tytul: "",
             opis: "",
             data_wydania: "",
             kategoria_wiekowa: ""
         })
 
-        setDetails({
+        setDetale({
             id_gatunek: "",
             id_producent: "",
             id_wydawca: "",
@@ -93,49 +95,38 @@ function GraForm() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
-        fetch("http://localhost:3001/gra/", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    gra: game,
-                    detale: details
-                })
-            })
-            .then(response => {
-                return response.json();
-            })
-            .then(jsonData => {
-                console.log(jsonData);
-                if(jsonData.err) throw new Error(jsonData.err);
-                setOpen(true);
-                clearForm();
-            })
-            .catch(err => {
-                console.error(err);
-                setErrors([
-                    ...errors,
-                    err
-                ])
-            });
+        fetchData('POST', 'gra/', (json) => {
+            console.log(json);
+            setOpen(true);
+            clearForm();
+        }, (err) => {
+            setErrors([
+                ...errors,
+                err
+            ]);
+        }, {
+            'Content-Type': 'application/json'
+        },
+        JSON.stringify({
+            gra,
+            detale
+        }));
     }
 
-    const handleGameChange = (event) => {
-        setGame({
-            ...game,
+    const handleChangeGra = (event) => {
+        setGra({
+            ...gra,
             [event.target.name]: event.target.value
         })
     }
 
-    const handleDetailsChange = (event) => {
-        setDetails({
-            ...details,
+    const handleChangeDetale = (event) => {
+        setDetale({
+            ...detale,
             [event.target.name]: event.target.value
         })
 
-        console.log(details);
+        console.log(detale);
     }
 
     return (
@@ -152,10 +143,9 @@ function GraForm() {
                         placeholder="Tytuł"
                         margin="normal"
                         fullWidth
-                        variant="outlined"
                         required
-                        onChange={handleGameChange}
-                        value={game.tytul}
+                        onChange={handleChangeGra}
+                        value={gra.tytul}
                     />
                     <TextField
                         name="opis"
@@ -164,9 +154,8 @@ function GraForm() {
                         placeholder="Opis"
                         margin="normal"
                         fullWidth
-                        variant="outlined"
-                        onChange={handleGameChange}
-                        value={game.opis}
+                        onChange={handleChangeGra}
+                        value={gra.opis}
                     />
                     <TextField
                         name="data_wydania"
@@ -174,14 +163,13 @@ function GraForm() {
                         type="date"
                         className={classes.textField}
                         InputLabelProps={{
-                        shrink: true,
+                            shrink: true,
                         }}
                         margin="normal"
                         fullWidth
-                        variant="outlined"
                         required
-                        onChange={handleGameChange}
-                        value={game.data_wydania}
+                        onChange={handleChangeGra}
+                        value={gra.data_wydania}
                     />
                     <TextField
                         name="kategoria_wiekowa"
@@ -190,48 +178,19 @@ function GraForm() {
                         placeholder="Kategoria wiekowa"
                         margin="normal"
                         fullWidth
-                        variant="outlined"
                         required
-                        onChange={handleGameChange}
-                        value={game.kategoria_wiekowa}
+                        onChange={handleChangeGra}
+                        value={gra.kategoria_wiekowa}
                     />
 
-                    <DetailsSelect 
-                        label="Gatunek"
-                        id_name="id_gatunek"
-                        db_id_name="id_gatunek"
-                        value={details.id_gatunek}
-                        details={fetchedDetails.gatunki}
-                        loading={loading}
-                        handleChange={handleDetailsChange}
-                    />
-                    <DetailsSelect 
-                        label="Producent"
-                        id_name="id_producent"
-                        db_id_name="id_firma"
-                        value={details.id_producent}
-                        details={fetchedDetails.firmy}
-                        loading={loading}
-                        handleChange={handleDetailsChange}
-                    />
-                    <DetailsSelect 
-                        label="Wydawca"
-                        id_name="id_wydawca"
-                        db_id_name="id_firma"
-                        value={details.id_wydawca}
-                        details={fetchedDetails.firmy}
-                        loading={loading}
-                        handleChange={handleDetailsChange}
-                    />
-                    <DetailsSelect 
-                        label="Platforma"
-                        id_name="id_platforma"
-                        db_id_name="id_platforma"
-                        value={details.id_platforma}
-                        details={fetchedDetails.platformy}
-                        loading={loading}
-                        handleChange={handleDetailsChange}
-                    />
+                    <Grid container justify="center" alignItems="center" margin="normal">
+                        <DetaleCheckboxList label="Gatunki" />
+                        <DetaleCheckboxList label="Wydawcy" />
+                        <DetaleCheckboxList label="Producenci" />
+                        <DetaleCheckboxList label="Platformy" />
+                    </Grid>
+                    <br/>
+
                     <Button variant="contained" color="primary" type="submit" className={classes.button}>
                         Wyślij
                     </Button>

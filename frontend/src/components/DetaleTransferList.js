@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
+import { makeStyles } from '@material-ui/core/styles';
+
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -9,6 +11,15 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 
+const useStyles = makeStyles(theme => ({
+    list: {
+		position: "relative",
+		overflowY: "scroll",
+		maxHeight: 200,
+		minHeight: 200,
+	}
+}));
+
 function not(a, b) {
     return a.filter(value => b.indexOf(value) === -1);
 }
@@ -17,17 +28,24 @@ function intersection(a, b) {
     return a.filter(value => b.indexOf(value) !== -1);
 }
 
-function DetailsTransferList(props) {
-    const classes = {};
-    const { label, id_name, name, db_id_name, value, details, loading, handleChange } = props;
+function notById(a, b, id_name) {
+	b = b.map(value => value[id_name]);
+	return a.filter(value => b.indexOf(value[id_name]) === -1);
+}
+
+function DetaleTransferList(props) {
+    const classes = useStyles();
+    const { id_name, name, wszystkieDetale, zaznaczoneDetale, handleChange } = props;
 
     const [checked, setChecked] = useState([]);
     const [left, setLeft] = useState([]);
     const [right, setRight] = useState([]);
 
     useEffect(() => {
-        setLeft(details);
-    }, [details])
+		const niezaznaczoneDetale = notById(wszystkieDetale, zaznaczoneDetale, id_name);
+		setLeft(niezaznaczoneDetale);
+		setRight(zaznaczoneDetale);
+    }, [])
 
     const leftChecked = intersection(checked, left);
     const rightChecked = intersection(checked, right);
@@ -59,8 +77,8 @@ function DetailsTransferList(props) {
     
     const customList = items => (
         <Paper className={classes.paper}>
-          <List dense component="div" role="list">
-            {items.map(value => {
+          <List dense className={classes.list}>
+            { items.map(value => {
               const labelId = `transfer-list-item-${value[id_name]}-label`;
     
               return (
@@ -114,4 +132,4 @@ function DetailsTransferList(props) {
     );
 }
 
-export default DetailsTransferList;
+export default DetaleTransferList;

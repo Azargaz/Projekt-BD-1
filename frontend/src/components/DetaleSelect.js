@@ -6,14 +6,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 
-function DetailsSelect(props) {
-    const { label, id_name, db_id_name, value, details, loading, handleChange } = props;
+function DetaleSelect(props) {
+    const { label, id_name, db_id_name, name, value, detale, loading, handleChange } = props;
     return (
-        <FormControl variant="outlined" fullWidth margin="normal">
+        <FormControl fullWidth margin="normal">
             <InputLabel id={id_name + "-select-label"}>
                 {label}
             </InputLabel>
-            <Select
+            <Select key={id_name+value}
                 labelId={id_name + "-select-label"}
                 id={id_name + "-select"}
                 name={id_name}
@@ -24,8 +24,8 @@ function DetailsSelect(props) {
                 {loading ? (
                     <CircularProgress/>
                 ) : (
-                    details.map(detail => (
-                        <MenuItem key={id_name + ":" + detail[db_id_name]} value={detail[db_id_name]}>{detail.nazwa}</MenuItem>
+                    detale.map(detal => (
+                        <MenuItem key={id_name + ":" + detal[db_id_name]} value={detal[db_id_name]}>{detal[name]}</MenuItem>
                     ))
                 )}
             </Select>
@@ -33,4 +33,4 @@ function DetailsSelect(props) {
     )
 }
 
-export default DetailsSelect;
+export default DetaleSelect;

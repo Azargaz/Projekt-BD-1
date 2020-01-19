@@ -3,10 +3,26 @@ const router = require('express').Router()
 const db = require('./polaczenie')
 const auth = require('../utils/authorization')
 
-router.get('/:id_uzytkownik', (req, res) => {
+router.get('/id/:id_uzytkownik', (req, res) => {
     const { id_uzytkownik } = req.params;
 
     db.query("SELECT * FROM projekt.lista_uzytkownika($1)", [id_uzytkownik])
+        .then(result => {
+            res.status(201).json(
+                result.rows
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+router.get('/statusy', (req, res) => {
+    db.query("SELECT * FROM projekt.status_gry")
         .then(result => {
             res.status(201).json(
                 result.rows

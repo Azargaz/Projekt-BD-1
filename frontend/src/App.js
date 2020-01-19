@@ -25,8 +25,15 @@ const checkToken = () => {
 		&& localStorage.authToken !== "undefined" 
 		&& localStorage.authToken !== undefined 
 		&& localStorage.authToken !== null 
-		&& localStorage.authToken !== "") {
-		return true;
+		&& localStorage.authToken !== "") 
+	{
+		const decodedAuthToken = getDecodedToken();
+		if(decodedAuthToken.exp * 1000 < Date.now()) {
+			window.location.href = '/login';
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	return false;
@@ -37,8 +44,8 @@ const getDecodedToken = () => {
 }
 
 function App() {
-	const [authenticated, setAuthenticated] = useState(false);
-	const [decodedToken, setDecodedToken] = useState(null);
+	const [authenticated, setAuthenticated] = useState(checkToken());
+	const [decodedToken, setDecodedToken] = useState(getDecodedToken());
 	const [errors, setErrors] = useState({
 		authError: null
 	});
@@ -87,20 +94,20 @@ function App() {
 		setDecodedToken(null);
 	}
 	
-	useEffect(() => {
-		if(checkToken()) {
-			const decodedAuthToken = getDecodedToken();
-			if(decodedAuthToken.exp * 1000 < Date.now()) {
-				unauthenticate();
-				setAuthenticated(false);
-				setDecodedToken(null);
-				window.location.href = '/login';
-			} else {
-				setAuthenticated(true);
-				setDecodedToken(decodedAuthToken);
-			}
-		}
-	}, [])
+	// useEffect(() => {
+	// 	if(checkToken()) {
+	// 		const decodedAuthToken = getDecodedToken();
+	// 		if(decodedAuthToken.exp * 1000 < Date.now()) {
+	// 			unauthenticate();
+	// 			setAuthenticated(false);
+	// 			setDecodedToken(null);
+	// 			window.location.href = '/login';
+	// 		} else {
+	// 			setAuthenticated(true);
+	// 			setDecodedToken(decodedAuthToken);
+	// 		}
+	// 	}
+	// }, [])
 
 	return (
 		<AuthProvider value={{
@@ -116,7 +123,7 @@ function App() {
 				<NavBar/>
 				<Switch>
 					<Route exact path="/gry" component={GraTable} />
-					<AuthRoute exact path="/uzytkownik/:id/lista" component={ListaUzytkownika} />
+					<AuthRoute exact path="/uzytkownik/lista/:id_uzytkownik" component={ListaUzytkownika} />
 					<UnauthRoute exact path="/login" component={Login} />
 					<AdminRoute exact path="/admin/gra" component={GraForm} />
 				</Switch>
