@@ -7,10 +7,12 @@ import GraTable from './components/GraTable';
 import ListaUzytkownika from './components/ListaUzytkownika';
 import GraForm from './components/GraForm';
 import Login from './components/Login';
+import Gra from './components/Gra';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { AuthRoute, UnauthRoute, AdminRoute, AuthProvider } from './utils/Auth';
+import fetchData from './utils/fetchData';
 
 const setToken = (token) => {
     localStorage.setItem('authToken', token);
@@ -30,13 +32,13 @@ const checkToken = () => {
 		const decodedAuthToken = getDecodedToken();
 		if(decodedAuthToken.exp * 1000 < Date.now()) {
 			window.location.href = '/login';
-			return false;
+			return null;
 		} else {
-			return true;
+			return decodedAuthToken;
 		}
 	}
 
-	return false;
+	return null;
 }
 
 const getDecodedToken = () => {
@@ -44,8 +46,9 @@ const getDecodedToken = () => {
 }
 
 function App() {
-	const [authenticated, setAuthenticated] = useState(checkToken());
-	const [decodedToken, setDecodedToken] = useState(getDecodedToken());
+	const token = checkToken();
+	const [authenticated, setAuthenticated] = useState(token !== null);
+	const [decodedToken, setDecodedToken] = useState(token);
 	const [errors, setErrors] = useState({
 		authError: null
 	});
@@ -58,34 +61,25 @@ function App() {
 
 	const authenticate = (loginData) => {
 		const { login, haslo } = loginData;
-		fetch('http://localhost:3001/uzytkownik/login', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					login,
-					haslo
-				})
-			})
-			.then((response) => {
-				return response.json();
-			})
-			.then((jsonData) => {
-				if(jsonData.status === "error") {
-					setErrors({
-						authError: jsonData.authError
-					});
-				} else {
-					setToken(jsonData.token);
-					const decodedToken = getDecodedToken();
-					setAuthenticated(true);
-					setDecodedToken(decodedToken);
-				}
-			})
-			.catch(err => {
-				console.error(err);
-			});
+		fetchData('POST', 'uzytkownik/login', (json) => {
+			if(json.status === "error") {
+				setErrors({
+					authError: json.authError
+				});
+			} else {
+				setToken(json.token);
+				const decodedToken = getDecodedToken();
+				setAuthenticated(true);
+				setDecodedToken(decodedToken);
+			}
+		} , (err) => {
+
+		}, {
+			'Content-Type': 'application/json'
+		}, JSON.stringify({
+			login,
+			haslo
+		}));
 	}
 	
 	const unauthenticate = () => {
@@ -93,21 +87,6 @@ function App() {
 		setAuthenticated(false);
 		setDecodedToken(null);
 	}
-	
-	// useEffect(() => {
-	// 	if(checkToken()) {
-	// 		const decodedAuthToken = getDecodedToken();
-	// 		if(decodedAuthToken.exp * 1000 < Date.now()) {
-	// 			unauthenticate();
-	// 			setAuthenticated(false);
-	// 			setDecodedToken(null);
-	// 			window.location.href = '/login';
-	// 		} else {
-	// 			setAuthenticated(true);
-	// 			setDecodedToken(decodedAuthToken);
-	// 		}
-	// 	}
-	// }, [])
 
 	return (
 		<AuthProvider value={{
@@ -126,6 +105,7 @@ function App() {
 					<AuthRoute exact path="/uzytkownik/lista/:id_uzytkownik" component={ListaUzytkownika} />
 					<UnauthRoute exact path="/login" component={Login} />
 					<AdminRoute exact path="/admin/gra" component={GraForm} />
+					<Route exact path="/gra/:id_gra" component={Gra} />
 				</Switch>
 			</Router>
 		</AuthProvider>

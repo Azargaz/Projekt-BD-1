@@ -11,26 +11,21 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 import DetaleSelect from './DetaleSelect';
+import MuiDatePicker from './MuiDatePicker';
 
 function GraEdytujDialog(props) {
-    const { onClose, open } = props;
+    const { onClose, onCancel, open, edytowanaGra, statusy } = props;
 
-    const [statusy, setStatusy] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [gra, setGra] = useState(props.gra);
+    const [gra, setGra] = useState(edytowanaGra);
 
     useEffect(() => {
-        setLoading(true);
-        fetchData('GET', 'uzytkownik/lista/statusy', (json) => {
-            setStatusy(json);
-            setLoading(false);
-        });
-    }, [])
+        setGra(edytowanaGra);
+    }, [edytowanaGra])
 
     const handleSubmit = () => {
         fetchData('PUT', 'uzytkownik/lista', (json) => {
             console.log(json);
-            handleClose();
+            onClose(gra);
         }, (err) => {}, {
             'Content-Type': 'application/json',
             'authorization': localStorage.authToken
@@ -52,13 +47,16 @@ function GraEdytujDialog(props) {
         console.log(gra);
     }
 
-    const handleClose = () => {
-        onClose(gra);
-    };
+    const handleDateChange = (date, name) => {
+        setGra({
+            ...gra,
+            [name]: date
+        });
+    }
 
     return (
-        <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Edytuj gre</DialogTitle>
+        <Dialog open={open} onClose={onCancel} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title"><h3>{gra.tytul}</h3></DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     Edytuj gre na swojej liście...
@@ -72,48 +70,33 @@ function GraEdytujDialog(props) {
                     fullWidth
                     required
                     onChange={handleChange}
-                    value={gra.ocena}
+                    value={gra.ocena ? gra.ocena : ""}
                 />  
-                <TextField
+                <MuiDatePicker
                     name="data_rozpoczecia"
                     label="Data rozpoczęcia"
-                    type="date"
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    margin="normal"
-                    fullWidth
-                    required
-                    onChange={handleChange}
-                    value={gra.data_rozpoczecia}
+                    onChange={handleDateChange}
+                    value={gra.data_rozpoczecia ? gra.data_rozpoczecia : ""}
                 />
-                <TextField
+                <MuiDatePicker
                     name="data_ukonczenia"
                     label="Data ukończenia"
-                    type="date"
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    margin="normal"
-                    fullWidth
-                    required
-                    onChange={handleChange}
-                    value={gra.data_ukonczenia}
+                    onChange={handleDateChange}
+                    value={gra.data_ukonczenia ? gra.data_ukonczenia : ""}
                 />
                 <DetaleSelect 
                     label="Status"
                     id_name="id_status_gry"
                     db_id_name="id_status_gry"
                     name="status"
-                    value={gra.id_status_gry}
+                    value={gra.id_status_gry ? gra.id_status_gry : ""}
                     detale={statusy}
-                    loading={loading}
                     handleChange={handleChange}
                     required
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="primary">
+                <Button onClick={onCancel} color="primary">
                     Anuluj
                 </Button>
                 <Button onClick={handleSubmit} color="primary">

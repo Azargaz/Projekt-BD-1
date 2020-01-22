@@ -3,15 +3,12 @@ import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 
 import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles(theme => ({
     list: {
@@ -24,7 +21,7 @@ const useStyles = makeStyles(theme => ({
 
 function DetaleCheckboxList(props) {
     const classes = useStyles();
-    const { id_name, name, wszystkieDetale, zaznaczoneDetale, handleChange, label } = props;
+    const { name, wszystkieDetale, zaznaczoneDetale, handleChange, label } = props;
     
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [checked, setChecked] = useState(false);

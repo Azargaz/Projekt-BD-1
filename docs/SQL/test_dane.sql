@@ -79,7 +79,7 @@ INSERT INTO uzytkownik(login, haslo, email, imie, nazwisko, admin) VALUES
     ('admin', 'admin', 'admin@email.com', null, null, true)
 ;
 
-SELECT * FROM dodaj_gre_do_listy( 1, 1, 1, null);
-SELECT * FROM dodaj_gre_do_listy( 1, 2, 1, null);
-SELECT * FROM dodaj_gre_do_listy( 2, 2, 1, null);
-SELECT * FROM dodaj_gre_do_listy( 2, 4, 1, null);
+SELECT * FROM dodaj_gre_do_listy( 1, 1, 1, null, null, null);
+SELECT * FROM dodaj_gre_do_listy( 1, 2, 1, null, null, null);
+SELECT * FROM dodaj_gre_do_listy( 2, 2, 1, null, null, null);
+SELECT * FROM dodaj_gre_do_listy( 2, 4, 1, null, null, null);

@@ -37,6 +37,7 @@ function ListaUzytkownika(props) {
     const classes = useStyles();
     const { id_uzytkownik } = props.match.params;
     const [gry, setGry] = useState([]);
+    const [statusy, setStatusy] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectedGra, setSelectedGra] = useState(null);
     
@@ -49,23 +50,38 @@ function ListaUzytkownika(props) {
 
     const handleClose = (nowa_gra) => {
         setOpen(false);
+        const graIndex = gry.findIndex(gra => nowa_gra.id_gra === gra.id_gra);
         setGry([
-            ...gry.filter(gra => gra.id_gra !== nowa_gra.id_gra),
-            nowa_gra
-        ])
+            ...gry.slice(0, graIndex),
+            nowa_gra,
+            ...gry.slice(graIndex + 1)
+        ]);
+    };
+
+    const handleCancel = (nowa_gra) => {
+        setOpen(false);
     };
 
     const fetchGry = () => {
         setLoading(true);
         fetchData('GET', `uzytkownik/lista/id/${id_uzytkownik}`, (json) => {
             setGry(json);
-            setLoading(false);
+            console.log(json);
+
+            fetchData('GET', 'uzytkownik/lista/statusy', (json) => {
+                setStatusy(json);
+                setLoading(false);
+            });
         });
     }
 
     useEffect(() => {
         fetchGry();
     }, [])
+
+    const statusGry = (id_status) => {
+        return statusy.filter(status => status.id_status_gry === id_status)[0].status;
+    }
 
     const table = loading ? (
         <CircularProgress/>
@@ -91,9 +107,9 @@ function ListaUzytkownika(props) {
                         </TableCell>
                         <TableCell align="center">{gra.tytul}</TableCell>
                         <TableCell align="center">{gra.ocena}</TableCell>
-                        <TableCell align="center">{new Date(gra.data_rozpoczecia).toLocaleDateString("pl-PL")}</TableCell>
-                        <TableCell align="center">{new Date(gra.data_ukonczenia).toLocaleDateString("pl-PL")}</TableCell>
-                        <TableCell align="center">{gra.status}</TableCell>
+                        <TableCell align="center">{gra.data_rozpoczecia ? new Date(gra.data_rozpoczecia).toLocaleDateString("pl-PL") : ""}</TableCell>
+                        <TableCell align="center">{gra.data_ukonczenia ? new Date(gra.data_ukonczenia).toLocaleDateString("pl-PL") : ""}</TableCell>
+                        <TableCell align="center">{statusGry(gra.id_status_gry)}</TableCell>
                         { decodedToken.id_uzytkownik === parseInt(id_uzytkownik, 10) && (
                             <TableCell align="center">
                                 <IconButton
@@ -113,7 +129,7 @@ function ListaUzytkownika(props) {
                                 >
                                     <CancelIcon fontSize="small" />
                                 </IconButton>
-                                </TableCell>
+                            </TableCell>
                         )}
                     </TableRow>
                 ))}
@@ -129,7 +145,7 @@ function ListaUzytkownika(props) {
                     Lista użytkownika
                 </Typography>
                 {table}
-                { selectedGra && <GraEdytujDialog gra={selectedGra ? selectedGra : {}} open={open} onClose={handleClose} /> }
+                { selectedGra && <GraEdytujDialog edytowanaGra={selectedGra} statusy={statusy} open={open} onClose={handleClose} onCancel={handleCancel} /> }
             </Grid>
         </Grid>
     )

@@ -1,7 +1,10 @@
 const defaultErrorCallback = (err) => {};
 
+const apiURL = "http://localhost:3001/";
+// const apiURL = "http://pascal.fis.agh.edu.pl:3001/";
+
 const fetchData = (method, url, successCallback, errorCallback=defaultErrorCallback, headers={}, body="") => {
-    fetch(`http://localhost:3001/${url}`, method === 'GET' ? {headers} : {
+    fetch(apiURL + url, method === 'GET' ? {headers} : {
             method,
             headers,
             body

@@ -10,8 +10,8 @@ router.get('/', (req, res) => {
 
 // INSERT jednej gry razem z przypisaniem wydawcy, producenta, gatunku oraz platformy
 router.post('/gra', async (req, res) => {
-    const { tytul, opis, data_wydania, kategoria_wiekowa, id_seria } = req.body.gra
-    const { id_gatunek, id_producent, id_wydawca, id_platforma } = req.body.detale
+    const { tytul, opis, data_wydania, kategoria_wiekowa, id_seria } = req.body.gra;
+    const { gatunki, wydawcy, producenci, platformy } = req.body.detale;
     
     const client = await db.connect()
 
@@ -22,21 +22,29 @@ router.post('/gra', async (req, res) => {
         let queryText = 'INSERT INTO projekt.gra(tytul, opis, data_wydania, kategoria_wiekowa, id_seria) VALUES ($1, $2, $3, $4, $5) RETURNING id_gra'
         let queryParams = [tytul, opis, data_wydania, kategoria_wiekowa, id_seria]
         let result = await client.query(queryText, queryParams)
-
-        queryText = 'INSERT INTO projekt.gra_producent VALUES ($1, $2)'
-        queryParams = [result.rows[0].id_gra, id_producent]
+        
+        // INSERT Gatunki
+        queryText = 'INSERT INTO projekt.gra_gatunek VALUES '
+        queryParams = [result.rows[0].id_gra]
+        queryText += prepareArrayInsert(gatunki, queryParams);
         await client.query(queryText, queryParams)
 
-        queryText = 'INSERT INTO projekt.gra_wydawca VALUES ($1, $2)'
-        queryParams = [result.rows[0].id_gra, id_wydawca]
+        // INSERT Wydawcy
+        queryText = 'INSERT INTO projekt.gra_wydawca VALUES '
+        queryParams = [result.rows[0].id_gra]
+        queryText += prepareArrayInsert(wydawcy, queryParams);
         await client.query(queryText, queryParams)
 
-        queryText = 'INSERT INTO projekt.gra_platforma VALUES ($1, $2)'
-        queryParams = [result.rows[0].id_gra, id_platforma]
+        // INSERT Producenci
+        queryText = 'INSERT INTO projekt.gra_producent VALUES '
+        queryParams = [result.rows[0].id_gra]
+        queryText += prepareArrayInsert(producenci, queryParams);
         await client.query(queryText, queryParams)
 
-        queryText = 'INSERT INTO projekt.gra_gatunek VALUES ($1, $2)'
-        queryParams = [result.rows[0].id_gra, id_gatunek]
+        // INSERT Platformy
+        queryText = 'INSERT INTO projekt.gra_platforma VALUES '
+        queryParams = [result.rows[0].id_gra]
+        queryText += prepareArrayInsert(platformy, queryParams);
         await client.query(queryText, queryParams)
         
         // Zatwierdzenie transakcji
@@ -57,5 +65,17 @@ router.post('/gra', async (req, res) => {
         client.release()
     }
 })
+
+const prepareArrayInsert = (array, queryParams) => {
+    let queryText = "";
+    for(let i = 0; i < array.length; i++) {
+        queryText += '($1, ';
+        queryParams.push(array[i]);
+        queryText += `$${i+2})`;
+        if(i+1 < array.length)
+            queryText += ',';
+    }
+    return queryText;
+}
 
 module.exports = router

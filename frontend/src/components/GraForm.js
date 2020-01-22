@@ -8,14 +8,11 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
-import FormControl from '@material-ui/core/FormControl';
 
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import MuiAlert from '@material-ui/lab/Alert';
 
-import DetaleSelect from './DetaleSelect';
-import DetaleTransferList from './DetaleTransferList';
 import DetaleCheckboxList from './DetaleCheckboxList';
 
 const useStyles = makeStyles(theme => ({
@@ -44,10 +41,10 @@ function GraForm() {
         kategoria_wiekowa: ""
     });
     const [detale, setDetale] = useState({
-        id_gatunek: "",
-        id_producent: "",
-        id_wydawca: "",
-        id_platforma: ""
+        gatunki: [],
+        wydawcy: [],
+        producenci: [],
+        platformy: []
     });
 
     const [fetchedDetails, setFetchedDetails] = useState({
@@ -125,8 +122,6 @@ function GraForm() {
             ...detale,
             [event.target.name]: event.target.value
         })
-
-        console.log(detale);
     }
 
     return (
@@ -184,10 +179,10 @@ function GraForm() {
                     />
 
                     <Grid container justify="center" alignItems="center" margin="normal">
-                        <DetaleCheckboxList label="Gatunki" />
-                        <DetaleCheckboxList label="Wydawcy" />
-                        <DetaleCheckboxList label="Producenci" />
-                        <DetaleCheckboxList label="Platformy" />
+                        <DetaleCheckboxList name="gatunki" label="Gatunki" onChange={handleChangeDetale} />
+                        <DetaleCheckboxList name="wydawcy" label="Wydawcy" />
+                        <DetaleCheckboxList name="producenci" label="Producenci" />
+                        <DetaleCheckboxList name="platformy" label="Platformy" />
                     </Grid>
                     <br/>
 

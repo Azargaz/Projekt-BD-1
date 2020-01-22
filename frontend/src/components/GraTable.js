@@ -12,34 +12,41 @@ import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 
+import { Link } from 'react-router-dom';
+
+import fetchData from '../utils/fetchData';
+
 const useStyles = makeStyles({
     table: {
         minWidth: 650,
     },
     header: {
         margin: 15
+    },
+    link: {
+        textDecoration: "none",
+        color: "black"
+    },
+    "link:visited": {
+        color: "black"
     }
 });
 
 function GraTable() {
     const classes = useStyles();
-    const [games, setGames] = useState([]);
+    const [gry, setGry] = useState([]);
     const [loading, setLoading] = useState(false);
     
-    const fetchData = () => {
+    const fetchGry = () => {
         setLoading(true);
-        fetch('http://localhost:3001/gra')
-            .then((response) => {
-                return response.json();
-            })
-            .then((jsonData) => {
-                setGames(jsonData);
-                setLoading(false);
-            });
+        fetchData('GET', 'gra', (json) => {
+            setGry(json);
+            setLoading(false);
+        });
     }
 
     useEffect(() => {
-        fetchData();
+        fetchGry();
     }, []);
 
     const table = loading ? (
@@ -57,15 +64,15 @@ function GraTable() {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {games.map(game => (
-                    <TableRow hover key={game.id_gra}>
+                {gry.map(gra => (
+                    <TableRow hover key={gra.id_gra}>
                         <TableCell component="th" scope="row">
-                            {game.id_gra}
+                            {gra.id_gra}
                         </TableCell>
-                        <TableCell align="right">{game.tytul}</TableCell>
-                        <TableCell align="right">{game.opis}</TableCell>
-                        <TableCell align="right">{new Date(game.data_wydania).toLocaleDateString("pl-PL")}</TableCell>
-                        <TableCell align="right">{game.kategoria_wiekowa}</TableCell>
+                        <TableCell align="right"><Link to={"/gra/" + gra.id_gra} className={classes.link}>{gra.tytul}</Link></TableCell>
+                        <TableCell align="right">{gra.opis}</TableCell>
+                        <TableCell align="right">{new Date(gra.data_wydania).toLocaleDateString("pl-PL")}</TableCell>
+                        <TableCell align="right">{gra.kategoria_wiekowa}</TableCell>
                     </TableRow>
                 ))}
             </TableBody>
