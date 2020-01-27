@@ -78,4 +78,76 @@ const prepareArrayInsert = (array, queryParams) => {
     return queryText;
 }
 
+router.post('/firma', (req, res) => {
+    const { nazwa, siedziba, strona_www } = req.body;
+    
+    db.query("INSERT INTO projekt.firma(nazwa, siedziba, strona_www) VALUES ($1, $2, $3) RETURNING id_firma", [nazwa, siedziba, strona_www])
+        .then(result => {
+            res.status(201).json(
+                result.rows[0]
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+router.post('/gatunek', (req, res) => {
+    const { nazwa } = req.body;
+    
+    db.query("INSERT INTO projekt.gatunek(nazwa) VALUES ($1) RETURNING id_gatunek", [nazwa])
+        .then(result => {
+            res.status(201).json(
+                result.rows[0]
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+router.post('/platforma', (req, res) => {
+    const { nazwa } = req.body;
+    
+    db.query("INSERT INTO projekt.platforma(nazwa) VALUES ($1) RETURNING id_platforma", [nazwa])
+        .then(result => {
+            res.status(201).json(
+                result.rows[0]
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+router.post('/seria_gier', (req, res) => {
+    const { tytul } = req.body;
+    
+    db.query("INSERT INTO projekt.seria_gier(tytul) VALUES ($1) RETURNING id_seria", [nazwa])
+        .then(result => {
+            res.status(201).json(
+                result.rows[0]
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
 module.exports = router

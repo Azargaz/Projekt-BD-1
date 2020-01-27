@@ -1,17 +1,17 @@
 -- Najlepsze gry limit
 
 CREATE OR REPLACE FUNCTION najlepsze_gry_limit ( lim int )
-RETURNS SETOF najlepsze_gry
+RETURNS SETOF projekt.najlepsze_gry
 AS $$
-    SELECT * FROM najlepsze_gry LIMIT lim;
+    SELECT * FROM projekt.najlepsze_gry LIMIT lim;
 $$ LANGUAGE SQL;
 
 -- Najnowsze gry limit
 
 CREATE OR REPLACE FUNCTION najnowsze_gry_limit ( lim int )
-RETURNS SETOF najnowsze_gry
+RETURNS SETOF projekt.najnowsze_gry
 AS $$
-    SELECT * FROM najnowsze_gry LIMIT lim;
+    SELECT * FROM projekt.najnowsze_gry LIMIT lim;
 $$ LANGUAGE SQL;
 
 -- Lista użytkownika
@@ -24,9 +24,9 @@ AS $$
     SELECT g.id_gra, g.tytul, g.data_wydania, g.kategoria_wiekowa,
         seg.tytul as seria,
         ug.ocena, ug.id_status, ug.data_rozpoczecia, ug.data_ukonczenia
-        FROM gra g JOIN uzytkownik_gra ug
+        FROM projekt.gra g JOIN projekt.uzytkownik_gra ug
         ON g.id_gra = ug.id_gra
-        LEFT JOIN seria_gier seg
+        LEFT JOIN projekt.seria_gier seg
         ON seg.id_seria = g.id_seria
         WHERE ug.id_uzytkownik = id_uzyt
     ;
@@ -39,7 +39,7 @@ AS $$
 DECLARE
     status_varchar VARCHAR := NULL;
 BEGIN
-    SELECT INTO status_varchar status FROM status_gry WHERE id_status_gry = id_stat;
+    SELECT INTO status_varchar status FROM projekt.status_gry WHERE id_status_gry = id_stat;
 
     IF status_varchar = 'Zakończona' THEN
         IF data_ukoncz IS NULL THEN
@@ -81,7 +81,7 @@ BEGIN
         END IF;
     END IF;
 
-    UPDATE uzytkownik_gra SET id_status = id_stat, data_ukonczenia = data_ukoncz, data_rozpoczecia = data_rozp, ocena = nowa_ocena
+    UPDATE projekt.uzytkownik_gra SET id_status = id_stat, data_ukonczenia = data_ukoncz, data_rozpoczecia = data_rozp, ocena = nowa_ocena
     WHERE id_gra = id_gry AND id_uzytkownik = id_uzyt;
     -- RAISE INFO 'id_uzyt: % id_gry: % status: % data_rozp: % data_ukoncz: % ocena: %', id_uzyt, id_gry, status_varchar, data_rozp, data_ukoncz, nowa_ocena;
     RETURN 1;
@@ -93,7 +93,7 @@ CREATE OR REPLACE FUNCTION usun_gre_z_listy( id_uzyt int, id_gry int )
 RETURNS int
 AS $$
 BEGIN
-    DELETE FROM uzytkownik_gra WHERE id_gra = id_gry AND id_uzytkownik = id_uzyt;
+    DELETE FROM projekt.uzytkownik_gra WHERE id_gra = id_gry AND id_uzytkownik = id_uzyt;
     -- RAISE INFO 'id_uzyt: % id_gry: % status: % data_rozp: % data_ukoncz: % ocena: %', id_uzyt, id_gry, status_varchar, data_rozp, data_ukoncz, nowa_ocena;
     RETURN 1;
 END;
@@ -112,7 +112,7 @@ DECLARE
     gatunki TEXT DEFAULT '-';
     gatunki_rec RECORD;
     gatunki_cur CURSOR FOR 
-    SELECT nazwa FROM gra_gatunek JOIN gatunek USING(id_gatunek) WHERE id_gra = id_gry;
+    SELECT nazwa FROM projekt.gra_gatunek JOIN projekt.gatunek USING(id_gatunek) WHERE id_gra = id_gry;
 BEGIN
     id := 0;
     OPEN gatunki_cur;
@@ -143,7 +143,7 @@ DECLARE
     wydawcy TEXT DEFAULT '-';
     wydawcy_rec RECORD;
     wydawcy_cur CURSOR FOR 
-    SELECT nazwa FROM gra_wydawca JOIN firma ON id_firma = id_wydawca WHERE id_gra = id_gry;
+    SELECT nazwa FROM projekt.gra_wydawca JOIN projekt.firma ON id_firma = id_wydawca WHERE id_gra = id_gry;
 BEGIN
     id := 0;
     OPEN wydawcy_cur;
@@ -174,7 +174,7 @@ DECLARE
     producenci TEXT DEFAULT '-';
     producenci_rec RECORD;
     producenci_cur CURSOR FOR 
-    SELECT nazwa FROM gra_producent JOIN firma ON id_firma = id_producent WHERE id_gra = id_gry;
+    SELECT nazwa FROM projekt.gra_producent JOIN projekt.firma ON id_firma = id_producent WHERE id_gra = id_gry;
 BEGIN
     id := 0;
     OPEN producenci_cur;
@@ -205,7 +205,7 @@ DECLARE
     platformy TEXT DEFAULT '-';
     platformy_rec RECORD;
     platformy_cur CURSOR FOR 
-    SELECT nazwa FROM gra_platforma JOIN platforma USING(id_platforma) WHERE id_gra = id_gry;
+    SELECT nazwa FROM projekt.gra_platforma JOIN projekt.platforma USING(id_platforma) WHERE id_gra = id_gry;
 BEGIN
     id := 0;
     OPEN platformy_cur;

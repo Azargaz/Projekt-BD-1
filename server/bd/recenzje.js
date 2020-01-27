@@ -60,8 +60,8 @@ router.get('/gra/:id_gra', (req, res) => {
 })
 
 router.post('/gra/:id_gra', auth, (req, res) => {
-    const { id_uzytkownik } = req.user;
     const { id_gra } = req.params;
+    const { id_uzytkownik } = req.user;
     const { tekst, data, ocena } = req.body;
     
     db.query('INSERT INTO projekt.recenzja VALUES ($1, $2, $3, $4, $5)', [id_uzytkownik, id_gra, tekst, data, ocena])
