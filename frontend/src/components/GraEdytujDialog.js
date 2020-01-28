@@ -56,7 +56,7 @@ function GraEdytujDialog(props) {
 
     return (
         <Dialog open={open} onClose={onCancel} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title"><h3>{gra.tytul}</h3></DialogTitle>
+            <DialogTitle id="form-dialog-title">{gra.tytul}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     Edytuj gre na swojej liście...
@@ -76,13 +76,13 @@ function GraEdytujDialog(props) {
                     name="data_rozpoczecia"
                     label="Data rozpoczęcia"
                     onChange={handleDateChange}
-                    value={gra.data_rozpoczecia ? gra.data_rozpoczecia : ""}
+                    value={gra.data_rozpoczecia}
                 />
                 <MuiDatePicker
                     name="data_ukonczenia"
                     label="Data ukończenia"
                     onChange={handleDateChange}
-                    value={gra.data_ukonczenia ? gra.data_ukonczenia : ""}
+                    value={gra.data_ukonczenia}
                 />
                 <DetaleSelect 
                     label="Status"

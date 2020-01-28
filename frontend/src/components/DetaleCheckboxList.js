@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
 
 function DetaleCheckboxList(props) {
     const classes = useStyles();
-    const { name, wszystkieDetale, zaznaczoneDetale, handleChange, label } = props;
+    const { nazwa, id_name, nazwa_name, wszystkieDetale, zaznaczoneDetale, handleChange, label } = props;
     
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [checked, setChecked] = useState(false);
@@ -33,10 +33,6 @@ function DetaleCheckboxList(props) {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-    const handleToggle = () => {
-        setChecked(!checked);
-    }
 
     return (
         <Grid item>
@@ -50,24 +46,14 @@ function DetaleCheckboxList(props) {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                <MenuItem onClick={handleToggle}>
-                    <ListItemIcon>
-                        <Checkbox disableRipple checked={checked} />
-                    </ListItemIcon>
-                    <ListItemText primary="Test 3Test 3Test 3Test 3Test 3" />
-                </MenuItem>
-                <MenuItem onClick={handleToggle}>
-                    <ListItemIcon>
-                        <Checkbox disableRipple checked={checked} />
-                    </ListItemIcon>
-                    <ListItemText primary="Test 3Test 3Test 3Test 3Test 3" />
-                </MenuItem>
-                <MenuItem onClick={handleToggle}>
-                    <ListItemIcon>
-                        <Checkbox disableRipple checked={checked} />
-                    </ListItemIcon>
-                    <ListItemText primary="Test 3Test 3Test 3Test 3Test 3" />
-                </MenuItem>
+                {wszystkieDetale && wszystkieDetale.map(detal => (
+                    <MenuItem key={detal[id_name]} onClick={() => handleChange(detal[id_name], nazwa)}>
+                        <ListItemIcon>
+                            <Checkbox disableRipple checked={zaznaczoneDetale.indexOf(detal[id_name]) !== -1} />
+                        </ListItemIcon>
+                        <ListItemText primary={detal[nazwa_name]} />
+                    </MenuItem>
+                ))}
             </Menu>
         </Grid>
     );

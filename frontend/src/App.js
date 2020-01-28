@@ -9,10 +9,13 @@ import GraForm from './components/GraForm';
 import Login from './components/Login';
 import Gra from './components/Gra';
 
+import FirmaTable from './components/FirmaTable';
+
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import { AuthRoute, UnauthRoute, AdminRoute, AuthProvider } from './utils/Auth';
 import fetchData from './utils/fetchData';
+import GraTableAdmin from './components/GraTableAdmin';
 
 const setToken = (token) => {
     localStorage.setItem('authToken', token);
@@ -46,9 +49,9 @@ const getDecodedToken = () => {
 }
 
 function App() {
-	const token = checkToken();
-	const [authenticated, setAuthenticated] = useState(token !== null);
-	const [decodedToken, setDecodedToken] = useState(token);
+	const token = localStorage.authToken;
+	const [authenticated, setAuthenticated] = useState(checkToken() !== null);
+	const [decodedToken, setDecodedToken] = useState(authenticated && getDecodedToken());
 	const [errors, setErrors] = useState({
 		authError: null
 	});
@@ -93,6 +96,7 @@ function App() {
 			authenticated,
 			authenticate,
 			unauthenticate,
+			token,
 			decodedToken,
 			errors,
 			clearErrors
@@ -104,8 +108,13 @@ function App() {
 					<Route exact path="/gry" component={GraTable} />
 					<AuthRoute exact path="/uzytkownik/lista/:id_uzytkownik" component={ListaUzytkownika} />
 					<UnauthRoute exact path="/login" component={Login} />
-					<AdminRoute exact path="/admin/gra" component={GraForm} />
 					<Route exact path="/gra/:id_gra" component={Gra} />
+
+					<AdminRoute exact path="/admin/gra" 
+					children={({ match }) => (
+						<GraTableAdmin />
+					)} />
+					<AdminRoute exact path="/admin/firma" component={FirmaTable} />
 				</Switch>
 			</Router>
 		</AuthProvider>

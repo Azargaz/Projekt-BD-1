@@ -68,7 +68,7 @@ function NavBar() {
                 </IconButton>
                 <Drawer open={open} onClose={handleClose} anchor="right">
                     <List>
-                        <ListItem component="h2">Akcje administratora</ListItem>
+                        <ListItem component="h2">Zarządzaj tabelami</ListItem>
                     </List>
                     <Divider />
                     <List>
@@ -125,8 +125,8 @@ function NavBar() {
             <Toolbar>
                 <Typography variant="h6" className={classes.title}>
                 {
-                    decodedToken && decodedToken.imie ? `Witaj w encyklopedii gier, ${decodedToken.imie}`
-                    : "Encyklopedia gier komputerowych"
+                    decodedToken && decodedToken.imie ? `Witaj w Graweb, ${decodedToken.imie}`
+                    : "Graweb"
                 }
                 </Typography>
                 <Button color="inherit" component={Link} to={"/gry"}>Gry</Button>

@@ -41,18 +41,6 @@ DECLARE
 BEGIN
     SELECT INTO status_varchar status FROM projekt.status_gry WHERE id_status_gry = id_stat;
 
-    IF status_varchar = 'Zakończona' THEN
-        IF data_ukoncz IS NULL THEN
-            data_ukoncz := NOW();
-        END IF;
-    END IF;
-
-    IF status_varchar = 'W trakcie' THEN
-        IF data_rozp IS NULL THEN
-            data_rozp := NOW();
-        END IF;
-    END IF;
-
     -- RAISE INFO 'id_uzyt: % id_gry: % status: % data_rozp: % data_ukoncz: % ocena: %', id_uzyt, id_gry, status_varchar, data_rozp, data_ukoncz, ocena;
     INSERT INTO uzytkownik_gra(id_uzytkownik, id_gra, id_status, data_rozpoczecia, data_ukonczenia, ocena)
     VALUES (id_uzyt, id_gry, id_stat, data_rozp, data_ukoncz, ocena);
@@ -68,18 +56,6 @@ DECLARE
     status_varchar VARCHAR := NULL;
 BEGIN
     SELECT INTO status_varchar status FROM status_gry WHERE id_status_gry = id_stat;
-
-    IF status_varchar = 'Zakończona' THEN
-        IF data_ukoncz IS NULL THEN
-            data_ukoncz := NOW();
-        END IF;
-    END IF;
-
-    IF status_varchar = 'W trakcie' THEN
-        IF data_rozp IS NULL THEN
-            data_rozp := NOW();
-        END IF;
-    END IF;
 
     UPDATE projekt.uzytkownik_gra SET id_status = id_stat, data_ukonczenia = data_ukoncz, data_rozpoczecia = data_rozp, ocena = nowa_ocena
     WHERE id_gra = id_gry AND id_uzytkownik = id_uzyt;

@@ -78,6 +78,22 @@ const prepareArrayInsert = (array, queryParams) => {
     return queryText;
 }
 
+router.get('/firma', (req, res) => {
+    db.query("SELECT * FROM projekt.firma")
+        .then(result => {
+            res.status(201).json(
+                result.rows
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
 router.post('/firma', (req, res) => {
     const { nazwa, siedziba, strona_www } = req.body;
     
@@ -85,6 +101,22 @@ router.post('/firma', (req, res) => {
         .then(result => {
             res.status(201).json(
                 result.rows[0]
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+router.get('/gatunek', (req, res) => {
+    db.query("SELECT * FROM projekt.gatunek")
+        .then(result => {
+            res.status(201).json(
+                result.rows
             )
         })
         .catch(err => {
@@ -114,6 +146,22 @@ router.post('/gatunek', (req, res) => {
         })
 })
 
+router.get('/platforma', (req, res) => {
+    db.query("SELECT * FROM projekt.platforma")
+        .then(result => {
+            res.status(201).json(
+                result.rows
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
 router.post('/platforma', (req, res) => {
     const { nazwa } = req.body;
     
@@ -132,7 +180,23 @@ router.post('/platforma', (req, res) => {
         })
 })
 
-router.post('/seria_gier', (req, res) => {
+router.get('/seria', (req, res) => {
+    db.query("SELECT * FROM projekt.seria_gier")
+        .then(result => {
+            res.status(201).json(
+                result.rows
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+router.post('/seria', (req, res) => {
     const { tytul } = req.body;
     
     db.query("INSERT INTO projekt.seria_gier(tytul) VALUES ($1) RETURNING id_seria", [nazwa])

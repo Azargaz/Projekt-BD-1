@@ -66,7 +66,6 @@ function ListaUzytkownika(props) {
         setLoading(true);
         fetchData('GET', `uzytkownik/lista/id/${id_uzytkownik}`, (json) => {
             setGry(json);
-            console.log(json);
 
             fetchData('GET', 'uzytkownik/lista/statusy', (json) => {
                 setStatusy(json);
@@ -142,10 +141,10 @@ function ListaUzytkownika(props) {
         <Grid container justify="center" alignItems="center">
             <Grid item sm={8}>
                 <Typography variant="h3" className={classes.header}>
-                    Lista użytkownika
+                    {parseInt(id_uzytkownik, 10) === decodedToken.id_uzytkownik ? "Twoja lista gier" : "Lista gier użytkownika"}
                 </Typography>
                 {table}
-                { selectedGra && <GraEdytujDialog edytowanaGra={selectedGra} statusy={statusy} open={open} onClose={handleClose} onCancel={handleCancel} /> }
+                {selectedGra && <GraEdytujDialog edytowanaGra={selectedGra} statusy={statusy} open={open} onClose={handleClose} onCancel={handleCancel} />}
             </Grid>
         </Grid>
     )
