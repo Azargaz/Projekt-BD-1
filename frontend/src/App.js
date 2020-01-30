@@ -1,21 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 
 import NavBar from './components/NavBar';
-import GraTable from './components/GraTable';
+import Gry from './components/Gry';
 import ListaUzytkownika from './components/ListaUzytkownika';
-import GraForm from './components/GraForm';
 import Login from './components/Login';
 import Gra from './components/Gra';
 
-import FirmaTable from './components/FirmaTable';
+import GraAdmin from './components/admin/GraAdmin';
+import FirmaAdmin from './components/admin/FirmaAdmin';
+import GatunekAdmin from './components/admin/GatunekAdmin';
+import PlatformaAdmin from './components/admin/PlatformaAdmin';
+import SeriaGierAdmin from './components/admin/SeriaGierAdmin';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { ThemeProvider } from '@material-ui/styles';
+import theme from './theme';
 
 import { AuthRoute, UnauthRoute, AdminRoute, AuthProvider } from './utils/Auth';
 import fetchData from './utils/fetchData';
-import GraTableAdmin from './components/GraTableAdmin';
 
 const setToken = (token) => {
     localStorage.setItem('authToken', token);
@@ -56,6 +60,8 @@ function App() {
 		authError: null
 	});
 
+	const [darkmode, setDarkmode] = useState(localStorage.darkmode && localStorage.darkmode === 'true' ? true : false);
+
 	const clearErrors = () => {
 		setErrors({
 			authError: null
@@ -91,6 +97,11 @@ function App() {
 		setDecodedToken(null);
 	}
 
+	const handleDarkmodeChange = () => {
+		setDarkmode(!darkmode);
+		localStorage.darkmode = !darkmode;
+	}
+
 	return (
 		<AuthProvider value={{
 			authenticated,
@@ -101,22 +112,26 @@ function App() {
 			errors,
 			clearErrors
 		}}>
-			<Router>
-				<CssBaseline />
-				<NavBar/>
-				<Switch>
-					<Route exact path="/gry" component={GraTable} />
-					<AuthRoute exact path="/uzytkownik/lista/:id_uzytkownik" component={ListaUzytkownika} />
-					<UnauthRoute exact path="/login" component={Login} />
-					<Route exact path="/gra/:id_gra" component={Gra} />
+			<ThemeProvider theme={theme(darkmode)}>
+				<Router>
+					<CssBaseline />
+					<NavBar darkmode={darkmode} handleDarkmodeChange={handleDarkmodeChange} />
+					<Switch>
+						<Route exact path="/gry" component={Gry} />
+						<Route exact path="/gra/:id_gra" component={Gra} />
 
-					<AdminRoute exact path="/admin/gra" 
-					children={({ match }) => (
-						<GraTableAdmin />
-					)} />
-					<AdminRoute exact path="/admin/firma" component={FirmaTable} />
-				</Switch>
-			</Router>
+						<AuthRoute exact path="/uzytkownik/lista/:id_uzytkownik" component={ListaUzytkownika} />
+
+						<UnauthRoute exact path="/login" component={Login} />
+
+						<AdminRoute exact path="/admin/gra" component={GraAdmin} />
+						<AdminRoute exact path="/admin/firma" component={FirmaAdmin} />
+						<AdminRoute exact path="/admin/gatunek" component={GatunekAdmin} />
+						<AdminRoute exact path="/admin/platforma" component={PlatformaAdmin} />
+						<AdminRoute exact path="/admin/seria_gier" component={SeriaGierAdmin} />
+					</Switch>
+				</Router>
+			</ThemeProvider>
 		</AuthProvider>
 	);
 }

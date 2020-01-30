@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react'
-
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react'
 
 import Grid from '@material-ui/core/Grid';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -10,21 +8,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 
-const useStyles = makeStyles(theme => ({
-    list: {
-		position: "relative",
-		overflowY: "scroll",
-		maxHeight: 200,
-		minHeight: 200,
-	}
-}));
-
 function DetaleCheckboxList(props) {
-    const classes = useStyles();
     const { nazwa, id_name, nazwa_name, wszystkieDetale, zaznaczoneDetale, handleChange, label } = props;
     
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [checked, setChecked] = useState(false);
 
     const handleClick = event => {
         setAnchorEl(event.currentTarget);

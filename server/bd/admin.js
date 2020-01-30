@@ -180,7 +180,7 @@ router.post('/platforma', (req, res) => {
         })
 })
 
-router.get('/seria', (req, res) => {
+router.get('/seria_gier', (req, res) => {
     db.query("SELECT * FROM projekt.seria_gier")
         .then(result => {
             res.status(201).json(
@@ -196,10 +196,10 @@ router.get('/seria', (req, res) => {
         })
 })
 
-router.post('/seria', (req, res) => {
+router.post('/seria_gier', (req, res) => {
     const { tytul } = req.body;
     
-    db.query("INSERT INTO projekt.seria_gier(tytul) VALUES ($1) RETURNING id_seria", [nazwa])
+    db.query("INSERT INTO projekt.seria_gier(tytul) VALUES ($1) RETURNING id_seria", [tytul])
         .then(result => {
             res.status(201).json(
                 result.rows[0]

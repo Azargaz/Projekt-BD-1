@@ -1,15 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import DateFnsUtils from '@date-io/date-fns'; // choose your lib
 import {
 	KeyboardDatePicker ,
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
-
 import plLocale from "date-fns/locale/pl";
-
 import FormControl from '@material-ui/core/FormControl';
-import { Button } from '@material-ui/core';
 
 function MuiDatePicker(props) {
 	const { name, label, onChange, value, required } = props;

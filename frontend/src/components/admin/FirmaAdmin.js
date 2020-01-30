@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext } from 'react'
 
 import { makeStyles } from '@material-ui/core';
 
-import { AuthContext } from '../utils/Auth';
-import fetchData from '../utils/fetchData';
+import { AuthContext } from '../../utils/Auth';
+import fetchData from '../../utils/fetchData';
 
 import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
@@ -25,6 +25,7 @@ import Typography from '@material-ui/core/Typography';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import TabPanel from '../input/TabPanel';
 
 const useStyles = makeStyles(theme => ({
     header: {
@@ -38,24 +39,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-    
-    return (
-        <Typography
-            component="div"
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && <Box p={3}>{children}</Box>}
-        </Typography>
-    );
-}
-
-function FirmaTable() {
+function FirmaAdmin() {
     const classes = useStyles();
     const { token } = useContext(AuthContext);
 
@@ -122,73 +106,81 @@ function FirmaTable() {
     const table = loading ? (
         <CircularProgress/>
     ) : (
-        <TableContainer>
-        <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-                <TableRow>
-                    <TableCell>Id</TableCell>
-                    <TableCell align="right">Nazwa</TableCell>
-                    <TableCell align="right">Siedziba</TableCell>
-                    <TableCell align="right">Strona WWW</TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {firmy.map(firma => (
-                    <TableRow hover key={firma.id_firma}>
-                        <TableCell component="th" scope="row">
-                            {firma.id_firma}
-                        </TableCell>
-                        <TableCell align="right">{firma.nazwa}</TableCell>
-                        <TableCell align="right">{firma.siedziba}</TableCell>
-                        <TableCell align="right">{firma.strona_www}</TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-        </TableContainer>
+        <Grid container justify="center" alignItems="center">
+            <Grid item sm={8}>
+                <TableContainer>
+                <Table className={classes.table} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Id</TableCell>
+                            <TableCell align="right">Nazwa</TableCell>
+                            <TableCell align="right">Siedziba</TableCell>
+                            <TableCell align="right">Strona WWW</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {firmy.map(firma => (
+                            <TableRow hover key={firma.id_firma}>
+                                <TableCell component="th" scope="row">
+                                    {firma.id_firma}
+                                </TableCell>
+                                <TableCell align="right">{firma.nazwa}</TableCell>
+                                <TableCell align="right">{firma.siedziba}</TableCell>
+                                <TableCell align="right">{firma.strona_www}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+                </TableContainer>
+            </Grid>
+        </Grid>
     )
 
     const form = (
-        <form className={classes.form} onSubmit={handleSubmit}>
-            <TextField
-                name="nazwa"
-                type="text"
-                label="Nazwa"
-                placeholder="Nazwa"
-                margin="normal"
-                fullWidth
-                required
-                onChange={handleChange}
-                value={firma.nazwa}
-            />
-            <TextField
-                name="siedziba"
-                type="text"
-                label="Siedziba"
-                placeholder="Warszawa, Polska"
-                margin="normal"
-                fullWidth
-                required
-                onChange={handleChange}
-                value={firma.siedziba}
-            />
-            <TextField
-                name="strona_www"
-                type="url"
-                label="Strona WWW"
-                placeholder="https://strona.com.pl"
-                margin="normal"
-                fullWidth
-                onChange={handleChange}
-                value={firma.strona_www}
-            />
-            <Button variant="contained" color="primary" type="submit" className={classes.button}>
-                Wyślij
-            </Button>
-            <Button variant="contained" color="primary" className={classes.button} onClick={clearForm}>
-                Reset
-            </Button>
-        </form>
+        <Grid container justify="center" alignItems="center">
+            <Grid item sm={8}>
+                <form className={classes.form} onSubmit={handleSubmit}>
+                    <TextField
+                        name="nazwa"
+                        type="text"
+                        label="Nazwa"
+                        placeholder="Nazwa"
+                        margin="normal"
+                        fullWidth
+                        required
+                        onChange={handleChange}
+                        value={firma.nazwa}
+                    />
+                    <TextField
+                        name="siedziba"
+                        type="text"
+                        label="Siedziba"
+                        placeholder="Warszawa, Polska"
+                        margin="normal"
+                        fullWidth
+                        required
+                        onChange={handleChange}
+                        value={firma.siedziba}
+                    />
+                    <TextField
+                        name="strona_www"
+                        type="url"
+                        label="Strona WWW"
+                        placeholder="https://strona.com.pl"
+                        margin="normal"
+                        fullWidth
+                        onChange={handleChange}
+                        value={firma.strona_www}
+                    />
+                    <Button variant="contained" color="primary" type="submit" className={classes.button}>
+                        Wyślij
+                    </Button>
+                    <Button variant="contained" color="primary" className={classes.button} onClick={clearForm}>
+                        Reset
+                    </Button>
+                </form>
+            </Grid>
+        </Grid>
     )
 
     return (
@@ -214,4 +206,4 @@ function FirmaTable() {
     )
 }
 
-export default FirmaTable
+export default FirmaAdmin

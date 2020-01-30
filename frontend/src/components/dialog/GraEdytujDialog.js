@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import fetchData from '../utils/fetchData';
+import fetchData from '../../utils/fetchData';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -10,8 +10,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
-import DetaleSelect from './DetaleSelect';
-import MuiDatePicker from './MuiDatePicker';
+import DetaleSelect from '../input/DetaleSelect';
+import MuiDatePicker from '../input/MuiDatePicker';
 
 function GraEdytujDialog(props) {
     const { onClose, onCancel, open, edytowanaGra, statusy } = props;

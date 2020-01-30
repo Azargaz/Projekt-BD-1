@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -7,6 +7,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
+import Switch from '@material-ui/core/Switch';
+import Link from '@material-ui/core/Link';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -41,8 +43,9 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function NavBar() {
+function NavBar(props) {
     const classes = useStyles();
+    const { darkmode, handleDarkmodeChange } = props;
     const { authenticated, unauthenticate, decodedToken } = useContext(AuthContext);
     const [open, setOpen] = useState(false);
 
@@ -72,34 +75,34 @@ function NavBar() {
                     </List>
                     <Divider />
                     <List>
-                        <ListItem button component={Link} to="/admin/gra" onClick={handleClose}>
+                        <ListItem button component={RouterLink} to="/admin/gra" onClick={handleClose}>
                             <ListItemIcon><VideogameAssetIcon/></ListItemIcon>
                             <ListItemText primary="Tabela Gra" />
                         </ListItem>
-                        <ListItem button component={Link} to="/admin/firma" onClick={handleClose}>
+                        <ListItem button component={RouterLink} to="/admin/firma" onClick={handleClose}>
                             <ListItemIcon><BusinessCenterIcon/></ListItemIcon>
                             <ListItemText primary="Tabela Firma" />
                         </ListItem>
-                        <ListItem button component={Link} to="/admin/gatunek" onClick={handleClose}>
+                        <ListItem button component={RouterLink} to="/admin/gatunek" onClick={handleClose}>
                             <ListItemIcon><CategoryIcon/></ListItemIcon>
                             <ListItemText primary="Tabela Gatunek" />
                         </ListItem>
-                        <ListItem button component={Link} to="/admin/platforma" onClick={handleClose}>
+                        <ListItem button component={RouterLink} to="/admin/platforma" onClick={handleClose}>
                             <ListItemIcon><GamepadIcon/></ListItemIcon>
                             <ListItemText primary="Tabela Platforma" />
                         </ListItem>
-                        <ListItem button component={Link} to="/admin/seria" onClick={handleClose}>
+                        <ListItem button component={RouterLink} to="/admin/seria_gier" onClick={handleClose}>
                             <ListItemIcon><ListIcon/></ListItemIcon>
                             <ListItemText primary="Tabela Seria gier" />
                         </ListItem>
                     </List>
                     <Divider />
                     <List>
-                        <ListItem button component={Link} to="/admin/recenzja" onClick={handleClose}>
+                        <ListItem button component={RouterLink} to="/admin/recenzja" onClick={handleClose}>
                             <ListItemIcon><CommentIcon/></ListItemIcon>
                             <ListItemText primary="Tabela Recenzje" />
                         </ListItem>
-                        <ListItem button component={Link} to="/admin/uzytkownik" onClick={handleClose}>
+                        <ListItem button component={RouterLink} to="/admin/uzytkownik" onClick={handleClose}>
                             <ListItemIcon><AccountCircleIcon/></ListItemIcon>
                             <ListItemText primary="Tabela Użytkownicy" />
                         </ListItem>
@@ -112,26 +115,29 @@ function NavBar() {
     const authBar = (
         authenticated ? (
             <React.Fragment>
-                {decodedToken && (<Button color="inherit" component={Link} to={`/uzytkownik/lista/${decodedToken.id_uzytkownik}`}>Lista gier</Button>)}
-                <Button color="inherit" onClick={unauthenticate} component={Link} to="/">Wyloguj się</Button>
+                {decodedToken && (<Button color="inherit" component={RouterLink} to={`/uzytkownik/lista/${decodedToken.id_uzytkownik}`}>Lista gier</Button>)}
+                <Button color="inherit" onClick={unauthenticate} component={RouterLink} to="/">Wyloguj się</Button>
             </React.Fragment>    
         ) : (
-            <Button color="inherit" component={Link} to={"/login"}>Login</Button>
+            <Button color="inherit" component={RouterLink} to={"/login"}>Login</Button>
         )
     )
 
     return (
         <AppBar position="static">
             <Toolbar>
-                <Typography variant="h6" className={classes.title}>
-                {
-                    decodedToken && decodedToken.imie ? `Witaj w Graweb, ${decodedToken.imie}`
-                    : "Graweb"
-                }
-                </Typography>
-                <Button color="inherit" component={Link} to={"/gry"}>Gry</Button>
+                <Link variant="h6" className={classes.title} color="inherit" to="/gry" component={RouterLink} >
+                {decodedToken && decodedToken.imie ? `Witaj w Graweb, ${decodedToken.imie}` : "Graweb"}
+                </Link>
+                <Button color="inherit" component={RouterLink} to={"/gry"}>Gry</Button>
                 {authBar}
                 {adminBar}
+                <Switch
+                    checked={darkmode}
+                    value={darkmode}
+                    onChange={handleDarkmodeChange}
+                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                />
             </Toolbar>
         </AppBar>
     )

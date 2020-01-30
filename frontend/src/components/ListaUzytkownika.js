@@ -1,4 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
+import { Link as RouterLink } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -17,10 +19,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 
 import IconButton from '@material-ui/core/IconButton';
-import CancelIcon from '@material-ui/icons/Cancel';
+import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 
-import GraEdytujDialog from './GraEdytujDialog';
+import GraEdytujDialog from './dialog/GraEdytujDialog';
 
 const useStyles = makeStyles({
     table: {
@@ -58,7 +60,7 @@ function ListaUzytkownika(props) {
         ]);
     };
 
-    const handleCancel = (nowa_gra) => {
+    const handleCancel = () => {
         setOpen(false);
     };
 
@@ -90,11 +92,11 @@ function ListaUzytkownika(props) {
             <TableHead>
                 <TableRow>
                     <TableCell>Id</TableCell>
-                    <TableCell align="center">Tytuł</TableCell>
-                    <TableCell align="center">Ocena</TableCell>
-                    <TableCell align="center">Data rozpoczęcia</TableCell>
-                    <TableCell align="center">Data ukończenia</TableCell>
-                    <TableCell align="center">Status</TableCell>
+                    <TableCell align="right">Tytuł</TableCell>
+                    <TableCell align="right">Ocena</TableCell>
+                    <TableCell align="right">Data rozpoczęcia</TableCell>
+                    <TableCell align="right">Data ukończenia</TableCell>
+                    <TableCell align="right">Status</TableCell>
                     { decodedToken.id_uzytkownik === parseInt(id_uzytkownik, 10) && <TableCell align="center">Akcje</TableCell> }
                 </TableRow>
             </TableHead>
@@ -104,11 +106,11 @@ function ListaUzytkownika(props) {
                         <TableCell component="th" scope="row">
                             {gra.id_gra}
                         </TableCell>
-                        <TableCell align="center">{gra.tytul}</TableCell>
-                        <TableCell align="center">{gra.ocena}</TableCell>
-                        <TableCell align="center">{gra.data_rozpoczecia ? new Date(gra.data_rozpoczecia).toLocaleDateString("pl-PL") : ""}</TableCell>
-                        <TableCell align="center">{gra.data_ukonczenia ? new Date(gra.data_ukonczenia).toLocaleDateString("pl-PL") : ""}</TableCell>
-                        <TableCell align="center">{statusGry(gra.id_status_gry)}</TableCell>
+                        <TableCell align="right"><Link to={"/gra/" + gra.id_gra} variant="body2" color="inherit" component={RouterLink}>{gra.tytul}</Link></TableCell>
+                        <TableCell align="right">{gra.ocena}</TableCell>
+                        <TableCell align="right">{gra.data_rozpoczecia ? new Date(gra.data_rozpoczecia).toLocaleDateString("pl-PL") : ""}</TableCell>
+                        <TableCell align="right">{gra.data_ukonczenia ? new Date(gra.data_ukonczenia).toLocaleDateString("pl-PL") : ""}</TableCell>
+                        <TableCell align="right">{statusGry(gra.id_status_gry)}</TableCell>
                         { decodedToken.id_uzytkownik === parseInt(id_uzytkownik, 10) && (
                             <TableCell align="center">
                                 <IconButton
@@ -126,7 +128,7 @@ function ListaUzytkownika(props) {
                                     aria-controls="menu-appbar"
                                     aria-haspopup="true"
                                 >
-                                    <CancelIcon fontSize="small" />
+                                    <DeleteIcon fontSize="small" />
                                 </IconButton>
                             </TableCell>
                         )}

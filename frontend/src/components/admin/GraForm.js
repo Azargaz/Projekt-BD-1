@@ -1,22 +1,22 @@
 import React, { useState, useEffect, useContext } from 'react';
 
-import fetchData from '../utils/fetchData';
+import fetchData from '../../utils/fetchData';
 
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
 
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import MuiAlert from '@material-ui/lab/Alert';
 
-import MuiDatePicker from './MuiDatePicker';
-import DetaleCheckboxList from './DetaleCheckboxList';
+import MuiDatePicker from '../input/MuiDatePicker';
+import DetaleCheckboxList from '../input/DetaleCheckboxList';
+import DetaleSelect from '../input/DetaleSelect';
 
-import { AuthContext } from '../utils/Auth';
+import { AuthContext } from '../../utils/Auth';
 
 const useStyles = makeStyles(theme => ({
 	form: {
@@ -42,7 +42,8 @@ function GraForm() {
 		tytul: '',
 		opis: '',
 		data_wydania: null,
-		kategoria_wiekowa: ''
+		kategoria_wiekowa: '',
+		id_seria: ''
 	});
 	const [detale, setDetale] = useState({
 		gatunki: [],
@@ -54,7 +55,8 @@ function GraForm() {
 	const [fetchedDetails, setFetchedDetails] = useState({
 		firmy: [],
 		gatunki: [],
-		platformy: []
+		platformy: [],
+		serie: []
     });
     
 	const [errors, setErrors] = useState([]);
@@ -77,7 +79,8 @@ function GraForm() {
 			tytul: '',
 			opis: '',
 			data_wydania: null,
-			kategoria_wiekowa: ''
+			kategoria_wiekowa: '',
+			id_seria: ''
 		});
 
 		setDetale({
@@ -160,142 +163,157 @@ function GraForm() {
 	};
 
 	return (
-		<Grid container justify="center" alignItems="center">
-			<Grid item sm={8}>
-				<form className={classes.form} onSubmit={handleSubmit}>
-					<TextField
-						name="tytul"
-						type="text"
-						label="Tytuł"
-						placeholder="Tytuł"
-						margin="normal"
-						fullWidth
-						required
-						onChange={handleChangeGra}
-						value={gra.tytul}
-					/>
-					<TextField
-						name="opis"
-						type="text"
-						label="Opis"
-						placeholder="Opis"
-						margin="normal"
-						fullWidth
-						onChange={handleChangeGra}
-						value={gra.opis}
-					/>
-                    <MuiDatePicker 
-                        name="data_wydania"
-                        label="Data wydania"
-                        onChange={handleDateChange}
-						value={gra.data_wydania}
-						required
-                    />
-					<TextField
-						name="kategoria_wiekowa"
-						type="text"
-						label="Kategoria wiekowa"
-						placeholder="Kategoria wiekowa"
-						margin="normal"
-						fullWidth
-						required
-						onChange={handleChangeGra}
-						value={gra.kategoria_wiekowa}
-					/>
+		<>
+			<form className={classes.form} onSubmit={handleSubmit}>
+				<TextField
+					name="tytul"
+					type="text"
+					label="Tytuł"
+					placeholder="Tytuł"
+					margin="normal"
+					fullWidth
+					required
+					onChange={handleChangeGra}
+					value={gra.tytul}
+				/>
+				<TextField
+					name="opis"
+					type="text"
+					label="Opis"
+					placeholder="Opis"
+					margin="normal"
+					fullWidth
+					onChange={handleChangeGra}
+					value={gra.opis}
+				/>
+				<MuiDatePicker 
+					name="data_wydania"
+					label="Data wydania"
+					onChange={handleDateChange}
+					value={gra.data_wydania}
+					required
+				/>
+				<TextField
+					name="kategoria_wiekowa"
+					type="text"
+					label="Kategoria wiekowa"
+					placeholder="Kategoria wiekowa"
+					margin="normal"
+					fullWidth
+					required
+					onChange={handleChangeGra}
+					value={gra.kategoria_wiekowa}
+				/>
+                <DetaleSelect 
+                    label="Seria gier"
+                    id_name="id_seria"
+                    db_id_name="id_seria"
+                    name="tytul"
+                    value={gra.id_seria ? gra.id_seria : ""}
+                    detale={fetchedDetails.serie}
+                    handleChange={handleChangeGra}
+                    required
+                />
 
-					<Grid
-						container
-						justify="center"
-						alignItems="center"
-						margin="normal"
-                    >
+				<Grid
+					container
+					justify="center"
+					alignItems="center"
+				>
+					<Grid item sm={3}>
 						<DetaleCheckboxList
 							nazwa="gatunki"
-                            label="Gatunki"
-                            id_name="id_gatunek"
-                            nazwa_name="nazwa"
+							label="Gatunki"
+							id_name="id_gatunek"
+							nazwa_name="nazwa"
 							wszystkieDetale={fetchedDetails.gatunki}
 							zaznaczoneDetale={detale.gatunki}
 							handleChange={handleChangeDetale}
 						/>
-                        <DetaleCheckboxList
+					</Grid>
+					<Grid item sm={3}>
+						<DetaleCheckboxList
 							nazwa="wydawcy"
-                            label="Wydawcy"
-                            id_name="id_firma"
-                            nazwa_name="nazwa"
+							label="Wydawcy"
+							id_name="id_firma"
+							nazwa_name="nazwa"
 							wszystkieDetale={fetchedDetails.firmy}
 							zaznaczoneDetale={detale.wydawcy}
 							handleChange={handleChangeDetale}
 						/>
-                        <DetaleCheckboxList
+					</Grid>
+					<Grid item sm={3}>
+						<DetaleCheckboxList
 							nazwa="producenci"
-                            label="Producenci"
-                            id_name="id_firma"
-                            nazwa_name="nazwa"
+							label="Producenci"
+							id_name="id_firma"
+							nazwa_name="nazwa"
 							wszystkieDetale={fetchedDetails.firmy}
 							zaznaczoneDetale={detale.producenci}
 							handleChange={handleChangeDetale}
 						/>
-                        <DetaleCheckboxList
+					</Grid>
+					<Grid item sm={3}>
+						<DetaleCheckboxList
 							nazwa="platformy"
-                            label="Platformy"
-                            id_name="id_platforma"
-                            nazwa_name="nazwa"
+							label="Platformy"
+							id_name="id_platforma"
+							nazwa_name="nazwa"
 							wszystkieDetale={fetchedDetails.platformy}
 							zaznaczoneDetale={detale.platformy}
 							handleChange={handleChangeDetale}
 						/>
 					</Grid>
-					<br />
+				</Grid>
+				<br />
 
-					<Button
-						variant="contained"
-						color="primary"
-						type="submit"
-						className={classes.button}>
-						Wyślij
-					</Button>
-					<Button
-						variant="contained"
-						color="primary"
-						className={classes.button}
-						onClick={clearForm}>
-						Reset
-					</Button>
-				</form>
-				<Snackbar
-					anchorOrigin={{
-						vertical: 'bottom',
-						horizontal: 'left'
-					}}
-					open={open}
-					autoHideDuration={5000}
-					onClose={handleClose}
-					message="Dodano gre"
-					action={
-						<IconButton
-							size="small"
-							aria-label="close"
-							color="inherit"
-							onClick={handleClose}>
-							<CloseIcon fontSize="small" />
-						</IconButton>
-					}
-				/>
-				<Snackbar
-					anchorOrigin={{
-						vertical: 'bottom',
-						horizontal: 'left'
-					}}
-					open={errors.length > 0}
-					autoHideDuration={5000}
-					onClose={handleClose}>
-					<Alert severity="error">
-						{/* {errors.length > 0 ? errors[errors.length - 1] : ''} */}
-					</Alert>
-				</Snackbar>
-			</Grid>
-		</Grid>
+				<Button
+					variant="contained"
+					color="primary"
+					type="submit"
+					className={classes.button}>
+					Wyślij
+				</Button>
+				<Button
+					variant="contained"
+					color="secondary"
+					className={classes.button}
+					onClick={clearForm}>
+					Reset
+				</Button>
+			</form>
+			<Snackbar
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'left'
+				}}
+				open={open}
+				autoHideDuration={5000}
+				onClose={handleClose}
+				message="Dodano gre"
+				action={
+					<IconButton
+						size="small"
+						aria-label="close"
+						color="inherit"
+						onClick={handleClose}>
+						<CloseIcon fontSize="small" />
+					</IconButton>
+				}
+			/>
+			<Snackbar
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'left'
+				}}
+				open={errors.length > 0}
+				autoHideDuration={5000}
+				onClose={handleClose}>
+				<Alert severity="error">
+					{/* {errors.length > 0 ? errors[errors.length - 1] : ''} */}
+				</Alert>
+			</Snackbar>
+		</>
 	);
 }
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
+
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -10,11 +10,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
 
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 
-import fetchData from '../utils/fetchData';
+import fetchData from '../../utils/fetchData';
 
 const useStyles = makeStyles({
     table: {
@@ -22,13 +22,6 @@ const useStyles = makeStyles({
     },
     header: {
         margin: 15
-    },
-    link: {
-        textDecoration: "none",
-        color: "black"
-    },
-    "link:visited": {
-        color: "black"
     }
 });
 
@@ -58,7 +51,6 @@ function GraTable() {
                 <TableRow>
                     <TableCell>Id</TableCell>
                     <TableCell align="right">Tytuł</TableCell>
-                    <TableCell align="right">Opis</TableCell>
                     <TableCell align="right">Data wydania</TableCell>
                     <TableCell align="right">Kat wiekowa</TableCell>
                 </TableRow>
@@ -69,8 +61,7 @@ function GraTable() {
                         <TableCell component="th" scope="row">
                             {gra.id_gra}
                         </TableCell>
-                        <TableCell align="right"><Link to={"/gra/" + gra.id_gra} className={classes.link}>{gra.tytul}</Link></TableCell>
-                        <TableCell align="right">{gra.opis}</TableCell>
+                        <TableCell align="right"><Link to={"/gra/" + gra.id_gra} variant="body1" color="inherit" component={RouterLink}>{gra.tytul}</Link></TableCell>
                         <TableCell align="right">{new Date(gra.data_wydania).toLocaleDateString("pl-PL")}</TableCell>
                         <TableCell align="right">{gra.kategoria_wiekowa}</TableCell>
                     </TableRow>
@@ -81,14 +72,9 @@ function GraTable() {
     )
 
     return (
-        <Grid container justify="center" alignItems="center">
-            <Grid item sm={8}>
-                <Typography variant="h3" className={classes.header}>
-                    Gry
-                </Typography>
-                {table}
-            </Grid>
-        </Grid>
+        <>
+            {table}
+        </>
     )
 }
 

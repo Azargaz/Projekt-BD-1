@@ -7,6 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 
+import TabPanel from '../input/TabPanel';
+
 import GraForm from './GraForm';
 import GraTable from './GraTable';
 import { makeStyles } from '@material-ui/core';
@@ -23,24 +25,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-    
-    return (
-        <Typography
-            component="div"
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && <Box p={3}>{children}</Box>}
-        </Typography>
-    );
-}
-
-function GraTableAdmin() {
+function GraAdmin() {
     const classes = useStyles();
     const [tab, setTab] = useState(0);
 
@@ -60,10 +45,18 @@ function GraTableAdmin() {
                         <Tab label="Dodaj" />
                     </Tabs>
                     <TabPanel value={tab} index={0}>
-                        <GraTable />
+                        <Grid container justify="center" alignItems="center">
+                            <Grid item sm={8}>
+                                <GraTable />
+                            </Grid>
+                        </Grid>
                     </TabPanel>
                     <TabPanel value={tab} index={1}>
-                        <GraForm />
+                        <Grid container justify="center" alignItems="center">
+                            <Grid item sm={8}>
+                                <GraForm />
+                            </Grid>
+                        </Grid>
                     </TabPanel>
                 </Paper>
             </Grid>
@@ -71,4 +64,4 @@ function GraTableAdmin() {
     )
 }
 
-export default GraTableAdmin
+export default GraAdmin
