@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
+import history from "./utils/history";
 import jwtDecode from 'jwt-decode';
 
 import NavBar from './components/NavBar';
@@ -80,6 +81,7 @@ function App() {
 				const decodedToken = getDecodedToken();
 				setAuthenticated(true);
 				setDecodedToken(decodedToken);
+				history.push("#/uzytkownik/lista/" + decodedToken.id_uzytkownik)
 			}
 		} , (err) => {
 
@@ -113,7 +115,7 @@ function App() {
 			clearErrors
 		}}>
 			<ThemeProvider theme={theme(darkmode)}>
-				<Router>
+				<Router history={history}>
 					<CssBaseline />
 					<NavBar darkmode={darkmode} handleDarkmodeChange={handleDarkmodeChange} />
 					<Switch>

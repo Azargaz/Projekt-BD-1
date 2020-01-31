@@ -24,6 +24,8 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import TabPanel from '../input/TabPanel';
 
+import DetaleSelect from '../input/DetaleSelect';
+
 const useStyles = makeStyles(theme => ({
     header: {
         margin: 15
@@ -45,6 +47,11 @@ function SeriaGierAdmin() {
     const [serie, setSerie] = useState([]);
 
     const [seria, setSeria] = useState({
+        tytul: ""
+    });
+
+    const [editSeria, setEditSeria] = useState({
+        id_seria: "",
         tytul: ""
     });
 
@@ -95,6 +102,43 @@ function SeriaGierAdmin() {
             Authorization: token
         },
         JSON.stringify(seria));
+    }
+
+    const handleSelectChange = (event) => {
+        const id = event.target.value;
+        const selectSeria = serie.filter(seria => seria.id_seria === id)[0];
+        if(selectSeria) {
+            setEditSeria(selectSeria);
+        }
+    }
+
+    const handleEditChange = (event) => {
+        setEditSeria({
+            ...editSeria,
+            [event.target.name]: event.target.value
+        })
+    }
+
+    const handleEditSubmit = async (event) => {
+        event.preventDefault();
+        fetchData('PUT', 'admin/seria_gier', (json) => {
+            handleTabChange(null, 0);
+        }, (err) => {}, {
+            'Content-Type': 'application/json',
+            Authorization: token
+        },
+        JSON.stringify(editSeria));
+    }
+
+    const handleDelete = () => {
+        if(editSeria.id_seria === "")
+            return;
+        
+        fetchData('DELETE', `admin/seria_gier/${editSeria.id_seria}`, (json) => {
+            handleTabChange(null, 0);
+        }, (err) => {}, {
+            Authorization: token
+        });
     }
 
     const table = loading ? (
@@ -152,6 +196,42 @@ function SeriaGierAdmin() {
         </Grid>
     )
 
+    const edit = (
+        <Grid container justify="center" alignItems="center">
+            <Grid item sm={8}>
+                <form className={classes.form} onSubmit={handleEditSubmit}>
+                    <DetaleSelect 
+                        label="Seria gier"
+                        id_name="id_seria"
+                        db_id_name="id_seria"
+                        name="tytul"
+                        value={editSeria.id_seria}
+                        detale={serie}
+                        loading={loading}
+                        handleChange={handleSelectChange}
+                    />
+                    <TextField
+                        name="tytul"
+                        type="text"
+                        label="Nowy tytuł"
+                        placeholder="tytul"
+                        margin="normal"
+                        fullWidth
+                        required
+                        onChange={handleEditChange}
+                        value={editSeria.tytul}
+                    />
+                    <Button variant="contained" color="primary" type="submit" className={classes.button}>
+                        Aktualizuj
+                    </Button>
+                    <Button variant="contained" color="secondary" className={classes.button} onClick={handleDelete}>
+                        Usuń
+                    </Button>
+                </form>
+            </Grid>
+        </Grid>  
+    )
+
     return (
         <Grid container justify="center" alignItems="center">
             <Grid item sm={8}>
@@ -162,12 +242,16 @@ function SeriaGierAdmin() {
                     <Tabs value={tab} onChange={handleTabChange} aria-label="table tabs" variant="fullWidth">
                         <Tab label="Wyświetl" />
                         <Tab label="Dodaj" />
+                        <Tab label="Edytuj" />
                     </Tabs>
                     <TabPanel value={tab} index={0}>
                         {table}
                     </TabPanel>
                     <TabPanel value={tab} index={1}>
                         {form}
+                    </TabPanel>
+                    <TabPanel value={tab} index={2}>
+                        {edit}
                     </TabPanel>
                 </Paper>
             </Grid>

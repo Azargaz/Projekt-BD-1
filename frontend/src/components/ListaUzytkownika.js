@@ -93,10 +93,10 @@ function ListaUzytkownika(props) {
                 <TableRow>
                     <TableCell>Id</TableCell>
                     <TableCell align="right">Tytuł</TableCell>
+                    <TableCell align="right">Status</TableCell>
                     <TableCell align="right">Ocena</TableCell>
                     <TableCell align="right">Data rozpoczęcia</TableCell>
                     <TableCell align="right">Data ukończenia</TableCell>
-                    <TableCell align="right">Status</TableCell>
                     { decodedToken.id_uzytkownik === parseInt(id_uzytkownik, 10) && <TableCell align="center">Akcje</TableCell> }
                 </TableRow>
             </TableHead>
@@ -107,10 +107,10 @@ function ListaUzytkownika(props) {
                             {gra.id_gra}
                         </TableCell>
                         <TableCell align="right"><Link to={"/gra/" + gra.id_gra} variant="body2" color="inherit" component={RouterLink}>{gra.tytul}</Link></TableCell>
+                        <TableCell align="right">{statusGry(gra.id_status_gry)}</TableCell>
                         <TableCell align="right">{gra.ocena}</TableCell>
                         <TableCell align="right">{gra.data_rozpoczecia ? new Date(gra.data_rozpoczecia).toLocaleDateString("pl-PL") : ""}</TableCell>
                         <TableCell align="right">{gra.data_ukonczenia ? new Date(gra.data_ukonczenia).toLocaleDateString("pl-PL") : ""}</TableCell>
-                        <TableCell align="right">{statusGry(gra.id_status_gry)}</TableCell>
                         { decodedToken.id_uzytkownik === parseInt(id_uzytkownik, 10) && (
                             <TableCell align="center">
                                 <IconButton

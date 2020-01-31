@@ -5,12 +5,11 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
-
 import TabPanel from '../input/TabPanel';
 
 import GraForm from './GraForm';
 import GraTable from './GraTable';
+import GraEditForm from './GraEditForm';
 import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -43,6 +42,7 @@ function GraAdmin() {
                     <Tabs value={tab} onChange={handleTabChange} aria-label="table tabs" variant="fullWidth">
                         <Tab label="Wyświetl" />
                         <Tab label="Dodaj" />
+                        <Tab label="Edytuj" />
                     </Tabs>
                     <TabPanel value={tab} index={0}>
                         <Grid container justify="center" alignItems="center">
@@ -55,6 +55,13 @@ function GraAdmin() {
                         <Grid container justify="center" alignItems="center">
                             <Grid item sm={8}>
                                 <GraForm />
+                            </Grid>
+                        </Grid>
+                    </TabPanel>
+                    <TabPanel value={tab} index={2}>
+                        <Grid container justify="center" alignItems="center">
+                            <Grid item sm={8}>
+                                <GraEditForm />
                             </Grid>
                         </Grid>
                     </TabPanel>

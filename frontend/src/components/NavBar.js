@@ -4,11 +4,11 @@ import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import Switch from '@material-ui/core/Switch';
 import Link from '@material-ui/core/Link';
+import Box from '@material-ui/core/Box';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -25,6 +25,11 @@ import GamepadIcon from '@material-ui/icons/Gamepad';
 import ListIcon from '@material-ui/icons/List';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import CommentIcon from '@material-ui/icons/Comment';
+import DarknessIcon from '@material-ui/icons/Brightness4';
+import BrightnessIcon from '@material-ui/icons/Brightness5';
+import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
+import SportsEsportsIcon from '@material-ui/icons/SportsEsports';
+import ListAltIcon from '@material-ui/icons/ListAlt';
 
 import { AuthContext } from '../utils/Auth';
 
@@ -37,10 +42,7 @@ const useStyles = makeStyles(theme => ({
     },
     title: {
         flexGrow: 1,
-    },
-    horizontalRuler: {
-        border: "1px solid rgba(0, 0, 0, 0.2)",
-    },
+    }
 }));
 
 function NavBar(props) {
@@ -60,15 +62,17 @@ function NavBar(props) {
     const adminBar = (
         (decodedToken && decodedToken.admin === true) && (
             <React.Fragment>
-                <IconButton
-                    color="inherit"
-                    aria-label="account of current user"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    onClick={handleOpen}
-                >
-                    <MenuIcon />
-                </IconButton>
+                <Tooltip title="Akcje administratora">
+                    <IconButton
+                        color="inherit"
+                        aria-label="account of current user"
+                        aria-controls="menu-appbar"
+                        aria-haspopup="true"
+                        onClick={handleOpen}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                </Tooltip>
                 <Drawer open={open} onClose={handleClose} anchor="right">
                     <List>
                         <ListItem component="h2">Zarządzaj tabelami</ListItem>
@@ -115,11 +119,25 @@ function NavBar(props) {
     const authBar = (
         authenticated ? (
             <React.Fragment>
-                {decodedToken && (<Button color="inherit" component={RouterLink} to={`/uzytkownik/lista/${decodedToken.id_uzytkownik}`}>Lista gier</Button>)}
-                <Button color="inherit" onClick={unauthenticate} component={RouterLink} to="/">Wyloguj się</Button>
+                {decodedToken && (
+                <Tooltip title="Lista gier">
+                    <IconButton aria-label="gamelist" color="inherit" component={RouterLink} to={`/uzytkownik/lista/${decodedToken.id_uzytkownik}`}>
+                        <ListAltIcon />
+                    </IconButton>
+                </Tooltip>
+                )}
+                <Tooltip title="Wyloguj się">
+                    <IconButton aria-label="logout" color="inherit" onClick={unauthenticate} component={RouterLink} to="/">
+                        <KeyboardReturnIcon />
+                    </IconButton>
+                </Tooltip>
             </React.Fragment>    
         ) : (
-            <Button color="inherit" component={RouterLink} to={"/login"}>Login</Button>
+            <Tooltip title="Zaloguj się">
+                <IconButton aria-label="gamelist" color="inherit" component={RouterLink} to={"/login"}>
+                    <AccountCircleIcon />
+                </IconButton>
+            </Tooltip>
         )
     )
 
@@ -129,15 +147,30 @@ function NavBar(props) {
                 <Link variant="h6" className={classes.title} color="inherit" to="/gry" component={RouterLink} >
                 {decodedToken && decodedToken.imie ? `Witaj w Graweb, ${decodedToken.imie}` : "Graweb"}
                 </Link>
-                <Button color="inherit" component={RouterLink} to={"/gry"}>Gry</Button>
-                {authBar}
-                {adminBar}
-                <Switch
-                    checked={darkmode}
-                    value={darkmode}
-                    onChange={handleDarkmodeChange}
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                />
+                <Box mx={1}>
+                    <Tooltip title="Gry">
+                        <IconButton aria-label="games" color="inherit" component={RouterLink} to={"/gry"}>
+                            <SportsEsportsIcon />
+                        </IconButton>
+                    </Tooltip>
+                    {authBar}
+                </Box>
+                <Box ml={2}>
+                    <Tooltip title={darkmode ? "Włącz tryb jasny" : "Włącz tryb ciemny"}>
+                        <IconButton
+                            color="inherit"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleDarkmodeChange}
+                        >
+                            {darkmode ? <DarknessIcon /> : <BrightnessIcon />}
+                        </IconButton>
+                    </Tooltip>
+                </Box>
+                <Box ml={2}>
+                    {adminBar}
+                </Box>
             </Toolbar>
         </AppBar>
     )

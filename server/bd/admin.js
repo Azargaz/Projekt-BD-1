@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
     })
 })
 
-// INSERT jednej gry razem z przypisaniem wydawcy, producenta, gatunku oraz platformy
+// INSERT jednej gry razem z przypisaniem wydawców, producentów, gatunków oraz platform
 router.post('/gra', async (req, res) => {
     const { tytul, opis, data_wydania, kategoria_wiekowa, id_seria } = req.body.gra;
     const { gatunki, wydawcy, producenci, platformy } = req.body.detale;
@@ -66,6 +66,7 @@ router.post('/gra', async (req, res) => {
     }
 })
 
+// Funkcja przygotowująca zapytanie INSERT z kilkoma wierszami dodawanych danych
 const prepareArrayInsert = (array, queryParams) => {
     let queryText = "";
     for(let i = 0; i < array.length; i++) {
@@ -112,6 +113,42 @@ router.post('/firma', (req, res) => {
         })
 })
 
+router.put('/firma', (req, res) => {
+    const { id_firma, nazwa, siedziba, strona_www } = req.body;
+    
+    db.query("UPDATE projekt.firma SET nazwa=$2, siedziba=$3, strona_www=$4 WHERE id_firma=$1 RETURNING id_firma", [id_firma, nazwa, siedziba, strona_www])
+        .then(result => {
+            res.status(201).json(
+                result.rows[0]
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+router.delete('/firma/:id_firma', (req, res) => {
+    const { id_firma } = req.params;
+    
+    db.query("DELETE FROM projekt.firma WHERE id_firma=$1", [id_firma])
+        .then(result => {
+            res.status(201).json(
+                result
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
 router.get('/gatunek', (req, res) => {
     db.query("SELECT * FROM projekt.gatunek")
         .then(result => {
@@ -135,6 +172,42 @@ router.post('/gatunek', (req, res) => {
         .then(result => {
             res.status(201).json(
                 result.rows[0]
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+router.put('/gatunek', (req, res) => {
+    const { id_gatunek, nazwa } = req.body;
+    
+    db.query("UPDATE projekt.gatunek SET nazwa=$2 WHERE id_gatunek=$1 RETURNING id_gatunek", [id_gatunek, nazwa])
+        .then(result => {
+            res.status(201).json(
+                result.rows[0]
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+router.delete('/gatunek/:id_gatunek', (req, res) => {
+    const { id_gatunek } = req.params;
+    
+    db.query("DELETE FROM projekt.gatunek WHERE id_gatunek=$1", [id_gatunek])
+        .then(result => {
+            res.status(201).json(
+                result
             )
         })
         .catch(err => {
@@ -180,6 +253,42 @@ router.post('/platforma', (req, res) => {
         })
 })
 
+router.put('/platforma', (req, res) => {
+    const { id_platforma, nazwa } = req.body;
+    
+    db.query("UPDATE projekt.platforma SET nazwa=$2 WHERE id_platforma=$1 RETURNING id_platforma", [id_platforma, nazwa])
+        .then(result => {
+            res.status(201).json(
+                result.rows[0]
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+router.delete('/platforma/:id_platforma', (req, res) => {
+    const { id_platforma } = req.params;
+    
+    db.query("DELETE FROM projekt.platforma WHERE id_platforma=$1", [id_platforma])
+        .then(result => {
+            res.status(201).json(
+                result
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
 router.get('/seria_gier', (req, res) => {
     db.query("SELECT * FROM projekt.seria_gier")
         .then(result => {
@@ -203,6 +312,42 @@ router.post('/seria_gier', (req, res) => {
         .then(result => {
             res.status(201).json(
                 result.rows[0]
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+router.put('/seria_gier', (req, res) => {
+    const { id_seria, tytul } = req.body;
+    
+    db.query("UPDATE projekt.seria_gier SET tytul=$2 WHERE id_seria=$1 RETURNING id_seria", [id_seria, tytul])
+        .then(result => {
+            res.status(201).json(
+                result.rows[0]
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+router.delete('/seria_gier/:id_seria', (req, res) => {
+    const { id_seria } = req.params;
+    
+    db.query("DELETE FROM projekt.seria_gier WHERE id_seria=$1", [id_seria])
+        .then(result => {
+            res.status(201).json(
+                result
             )
         })
         .catch(err => {

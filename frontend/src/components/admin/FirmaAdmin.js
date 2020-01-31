@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import Link from '@material-ui/core/Link';
 
 import { makeStyles } from '@material-ui/core';
 
@@ -6,7 +7,6 @@ import { AuthContext } from '../../utils/Auth';
 import fetchData from '../../utils/fetchData';
 
 import Paper from '@material-ui/core/Paper';
-import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 
 import Table from '@material-ui/core/Table';
@@ -20,12 +20,13 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import TabPanel from '../input/TabPanel';
+
+import DetaleSelect from '../input/DetaleSelect';
 
 const useStyles = makeStyles(theme => ({
     header: {
@@ -47,6 +48,13 @@ function FirmaAdmin() {
     const [firmy, setFirmy] = useState([]);
 
     const [firma, setFirma] = useState({
+        nazwa: "",
+        siedziba: "",
+        strona_www: ""
+    });
+
+    const [editFirma, setEditFirma] = useState({
+        id_firma: "",
         nazwa: "",
         siedziba: "",
         strona_www: ""
@@ -103,6 +111,44 @@ function FirmaAdmin() {
         JSON.stringify(firma));
     }
 
+    const handleSelectChange = (event) => {
+        const id = event.target.value;
+        const selectFirma = firmy.filter(firma => firma.id_firma === id)[0];
+        if(selectFirma) {
+            Object.keys(selectFirma).forEach((key) => selectFirma[key] = (selectFirma[key] === null) ? "" : selectFirma[key]);
+            setEditFirma(selectFirma);
+        }
+    }
+
+    const handleEditChange = (event) => {
+        setEditFirma({
+            ...editFirma,
+            [event.target.name]: event.target.value
+        })
+    }
+
+    const handleEditSubmit = async (event) => {
+        event.preventDefault();
+        fetchData('PUT', 'admin/firma', (json) => {
+            handleTabChange(null, 0);
+        }, (err) => {}, {
+            'Content-Type': 'application/json',
+            Authorization: token
+        },
+        JSON.stringify(editFirma));
+    }
+
+    const handleDelete = () => {
+        if(editFirma.id_firma === "")
+            return;
+        
+        fetchData('DELETE', `admin/firma/${editFirma.id_firma}`, (json) => {
+            handleTabChange(null, 0);
+        }, (err) => {}, {
+            Authorization: token
+        });
+    }
+
     const table = loading ? (
         <CircularProgress/>
     ) : (
@@ -126,7 +172,11 @@ function FirmaAdmin() {
                                 </TableCell>
                                 <TableCell align="right">{firma.nazwa}</TableCell>
                                 <TableCell align="right">{firma.siedziba}</TableCell>
-                                <TableCell align="right">{firma.strona_www}</TableCell>
+                                <TableCell align="right">
+                                    <Link href={firma.strona_www} target="_blank" rel="noopener" rel="noreferrer" color="secondary">
+                                        {firma.strona_www !== null ? firma.strona_www : ""}
+                                    </Link>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -143,7 +193,7 @@ function FirmaAdmin() {
                     <TextField
                         name="nazwa"
                         type="text"
-                        label="Nazwa"
+                      label="Nazwa"
                         placeholder="Nazwa"
                         margin="normal"
                         fullWidth
@@ -170,7 +220,7 @@ function FirmaAdmin() {
                         margin="normal"
                         fullWidth
                         onChange={handleChange}
-                        value={firma.strona_www}
+                        value={firma.strona_www !== null ? firma.strona_www : ""}
                     />
                     <Button variant="contained" color="primary" type="submit" className={classes.button}>
                         Wyślij
@@ -180,7 +230,64 @@ function FirmaAdmin() {
                     </Button>
                 </form>
             </Grid>
-        </Grid>
+        </Grid>  
+    )
+
+    const edit = (
+        <Grid container justify="center" alignItems="center">
+            <Grid item sm={8}>
+                <form className={classes.form} onSubmit={handleEditSubmit}>
+                    <DetaleSelect 
+                        label="Firma"
+                        id_name="id_firma"
+                        db_id_name="id_firma"
+                        name="nazwa"
+                        value={editFirma.id_firma}
+                        detale={firmy}
+                        loading={loading}
+                        handleChange={handleSelectChange}
+                    />
+                    <TextField
+                        name="nazwa"
+                        type="text"
+                        label="Nowa nazwa"
+                        placeholder="Nazwa"
+                        margin="normal"
+                        fullWidth
+                        required
+                        onChange={handleEditChange}
+                        value={editFirma.nazwa}
+                    />
+                    <TextField
+                        name="siedziba"
+                        type="text"
+                        label="Nowa siedziba"
+                        placeholder="Warszawa, Polska"
+                        margin="normal"
+                        fullWidth
+                        required
+                        onChange={handleEditChange}
+                        value={editFirma.siedziba}
+                    />
+                    <TextField
+                        name="strona_www"
+                        type="url"
+                        label="Nowa strona WWW"
+                        placeholder="https://strona.com.pl"
+                        margin="normal"
+                        fullWidth
+                        onChange={handleEditChange}
+                        value={editFirma.strona_www}
+                    />
+                    <Button variant="contained" color="primary" type="submit" className={classes.button}>
+                        Aktualizuj
+                    </Button>
+                    <Button variant="contained" color="secondary" className={classes.button} onClick={handleDelete}>
+                        Usuń
+                    </Button>
+                </form>
+            </Grid>
+        </Grid>  
     )
 
     return (
@@ -193,12 +300,16 @@ function FirmaAdmin() {
                     <Tabs value={tab} onChange={handleTabChange} aria-label="table tabs" variant="fullWidth">
                         <Tab label="Wyświetl" />
                         <Tab label="Dodaj" />
+                        <Tab label="Edytuj" />
                     </Tabs>
                     <TabPanel value={tab} index={0}>
                         {table}
                     </TabPanel>
                     <TabPanel value={tab} index={1}>
                         {form}
+                    </TabPanel>
+                    <TabPanel value={tab} index={2}>
+                        {edit}
                     </TabPanel>
                 </Paper>
             </Grid>

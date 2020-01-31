@@ -1,5 +1,4 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-import { teal } from '@material-ui/core/colors';
 
 export default (darkMode) => {
     return createMuiTheme({

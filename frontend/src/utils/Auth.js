@@ -18,11 +18,11 @@ const AuthRoute = ({ component: Component, ...rest }) => {
 
 const AdminRoute = ({ component: Component, ...rest }) => {
     const { authenticated, decodedToken } = useContext(AuthContext);
-    const { admin } = decodedToken;
+    const admin = authenticated ? decodedToken.admin : false;
     return (
         <Route
             {...rest}
-            render={(props) => (authenticated === false || admin === false) ? <Redirect to='/' /> : <Component {...props} />}
+            render={(props) => (authenticated && admin && authenticated === true && admin === true) ? <Component {...props} /> : <Redirect to='/' />}
         />
     )
 }
