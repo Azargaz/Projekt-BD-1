@@ -32,6 +32,23 @@ AS $$
     ;
 $$ LANGUAGE SQL;
 
+-- Wyświetl jedną gre
+CREATE OR REPLACE FUNCTION gra_z_listy_uzytkownika ( id_uzyt int, id_gry int )
+RETURNS TABLE(id_gra int, tytul varchar, data_wydania date, kategoria_wiekowa 
+            varchar, seria varchar, ocena int, id_status_gry int, data_rozpoczecia date, data_ukonczenia date)
+AS $$
+    SELECT g.id_gra, g.tytul, g.data_wydania, g.kategoria_wiekowa,
+        seg.tytul as seria,
+        ug.ocena, ug.id_status, ug.data_rozpoczecia, ug.data_ukonczenia
+        FROM projekt.gra g JOIN projekt.uzytkownik_gra ug
+        ON g.id_gra = ug.id_gra
+        LEFT JOIN projekt.seria_gier seg
+        ON seg.id_seria = g.id_seria
+        WHERE ug.id_uzytkownik = id_uzyt
+        AND ug.id_gra = id_gry
+    ;
+$$ LANGUAGE SQL;
+
 -- Dodaj
 CREATE OR REPLACE FUNCTION dodaj_gre_do_listy( id_uzyt int, id_gry int, id_stat int, ocena int, data_rozp date, data_ukoncz date )
 RETURNS int

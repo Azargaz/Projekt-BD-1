@@ -54,13 +54,20 @@ router.post('/login', (req, res) => {
 
 router.post('/', (req, res) => {
     const { login, haslo, email, imie, nazwisko } = req.body
-
-    db.query('INSERT INTO projekt.uzytkownik(login, haslo, email, imie, nazwisko) VALUES ($1, $2, $3, $4, $5) RETURNING id_uzytkownik', 
-    [login, haslo, email, imie, nazwisko])
+    
+    db.query('SELECT * FROM projekt.uzytkownik WHERE login=$1', [login])
         .then(result => {
-            res.status(201).json({
-                msg: `Dodano użytkownika o id = ${result.rows[0].id_uzytkownik}`
-            })
+            if(result.rows.length > 0) {
+                throw new Error("Użytkownik o danym loginie już istnieje!");
+            } else {
+                db.query('INSERT INTO projekt.uzytkownik(login, haslo, email, imie, nazwisko, admin) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id_uzytkownik', 
+                [login, haslo, email, imie, nazwisko, false])
+                    .then(result => {
+                        res.status(201).json({
+                            msg: `Dodano użytkownika o id = ${result.rows[0].id_uzytkownik}`
+                        })
+                    });
+            }
         })
         .catch(err => {
             console.error(err)
@@ -69,7 +76,8 @@ router.post('/', (req, res) => {
                 status: "error",
                 error: err.message
             });
-        })
+        });
+    
 })
 
 module.exports = router

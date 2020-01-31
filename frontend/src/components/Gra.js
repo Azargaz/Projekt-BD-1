@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 
 import fetchData from '../utils/fetchData';
+import { AuthContext } from '../utils/Auth';
+
+import GraEdytujDialog from './dialog/GraEdytujDialog';
+import GraDodajDialog from './dialog/GraDodajDialog';
+import GraUsunDialog from './dialog/GraUsunDialog';
 
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -15,23 +20,90 @@ import EditIcon from '@material-ui/icons/Edit';
 
 function Gra(props) {
     const { id_gra } = props.match.params;
+    const { decodedToken, authenticated } = useContext(AuthContext);
+
+    const [loading, setLoading] = useState(false);
+
     const [gra, setGra] = useState({});
+    const [graNaLiscie, setGraNaLiscie] = useState({
+        id_gra: "",
+        id_status_gry: "",
+        ocena: "",
+        data_rozpoczecia: "",
+        data_ukonczenia: ""
+    });
     const [detale, setDetale] = useState({
         wydawcy: "",
         producenci: "",
         gatunki: "",
         platformy: ""
     })
+    
+    const [statusy, setStatusy] = useState([]);
+    const [open, setOpen] = useState({
+        edytuj: false,
+        dodaj: false,
+        usun: false
+    });
+
+    const statusGry = (id_status) => {
+        const status = statusy.filter(status => status.id_status_gry === id_status)[0];
+        if(status)
+            return status.status;
+        else
+            return "";
+    }
+
+    const fetchGraNaLiscie = () => {
+        fetchData('GET', `uzytkownik/lista/id/${decodedToken.id_uzytkownik}/${id_gra}`, (json) => {
+            setGraNaLiscie(json);
+        });
+    }
 
     useEffect(() => {
+        setLoading(true);
         fetchData('GET', `gra/${id_gra}`, (json) => {
             setGra(json);
 
             fetchData('GET', `gra/detale/${id_gra}`, (json) => {
                 setDetale(json);
+
+                if(authenticated) {
+                    fetchGraNaLiscie();
+                } 
+                setLoading(false);
+            });
+
+            fetchData('GET', 'uzytkownik/lista/statusy', (json) => {
+                setStatusy(json);
             });
         });
     }, [id_gra])
+
+    const handleClickOpen = (name) => {
+        setOpen({
+            ...open,
+            [name]: true
+        });
+    };
+
+    const handleClose = (name) => {
+        setOpen({
+            ...open,
+            [name]: false
+        });
+        fetchGraNaLiscie();
+    };
+
+    const handleDelete = () => {
+        setGraNaLiscie({
+            id_gra: "",
+            id_status_gry: "",
+            ocena: "",
+            data_rozpoczecia: "",
+            data_ukonczenia: ""
+        });
+    }
 
     return (
         <Grid container justify="center" alignItems="baseline" spacing={3}>
@@ -43,6 +115,7 @@ function Gra(props) {
                                 <Typography variant="h5" component="h2">
                                     {gra.tytul}
                                 </Typography>
+                                <br/>
                                 <Typography color="textSecondary">
                                     Data wydania: {new Date(gra.data_wydania).toLocaleDateString()}
                                 </Typography>
@@ -70,41 +143,69 @@ function Gra(props) {
                                 <Typography color="textSecondary">
                                     Platformy:<br/>{detale.platformy.platformy_gry}
                                 </Typography>
+                                {gra.seria ? (
+                                    <>
+                                        <br/>
+                                        <Typography color="textSecondary">
+                                            Seria gier:<br/>{gra.seria}
+                                        </Typography>
+                                    </>
+                                ) : ""}
                             </CardContent>
                         </Card>
                     </Grid>
                     <Grid item>
                         <Card>
                             <CardContent>
-                                <Typography variant="h6" component="h2">
-                                    Twoja lista
-                                </Typography>
+                                {authenticated ? (
+                                    <>
+                                        <Typography variant="h6" component="h2">
+                                            Twoja lista
+                                        </Typography>
+                                        {loading ? "Ładowanie..." : graNaLiscie.id_gra && graNaLiscie.id_gra !== "" ? (
+                                            <>
+                                                <Typography color="textSecondary">
+                                                    Status: {statusGry(graNaLiscie.id_status_gry)}
+                                                </Typography>
+                                                <Typography color="textSecondary">
+                                                    Ocena: {!graNaLiscie.ocena || graNaLiscie.ocena === "" ? "Brak oceny" : graNaLiscie.ocena}
+                                                </Typography>
+                                            </>
+                                        ) : (
+                                            <Typography variant="body2">
+                                                Nie posiadasz tej gry na swojej liście.
+                                            </Typography>
+                                        )}
+                                    </>
+                                ) : (
+                                    <Typography variant="body1">
+                                        Zaloguj się, aby dodać gre do listy.
+                                    </Typography>
+                                )}
                             </CardContent>
                             <CardActions>
-                                <IconButton
-                                    color="inherit"
-                                    aria-label="account of current user"
-                                    aria-controls="menu-appbar"
-                                    aria-haspopup="true"
-                                >
-                                    <AddIcon fontSize="small" />
-                                </IconButton>
-                                <IconButton
-                                    color="inherit"
-                                    aria-label="account of current user"
-                                    aria-controls="menu-appbar"
-                                    aria-haspopup="true"
-                                >
-                                    <EditIcon fontSize="small" />
-                                </IconButton>
-                                <IconButton
-                                    color="inherit"
-                                    aria-label="account of current user"
-                                    aria-controls="menu-appbar"
-                                    aria-haspopup="true"
-                                >
-                                    <DeleteIcon fontSize="small" />
-                                </IconButton>
+                                {!authenticated || loading ? "" : graNaLiscie.id_gra ? 
+                                    (<>
+                                        <IconButton
+                                            color="inherit"
+                                            onClick={() => handleClickOpen("edytuj")}
+                                        >
+                                            <EditIcon fontSize="small" />
+                                        </IconButton>
+                                        <IconButton
+                                            color="inherit"
+                                            onClick={() => handleClickOpen("usun")}
+                                        >
+                                            <DeleteIcon fontSize="small" />
+                                        </IconButton>
+                                    </>) : (
+                                    <IconButton
+                                        color="inherit"
+                                        onClick={() => handleClickOpen("dodaj")}
+                                    >
+                                        <AddIcon fontSize="small" />
+                                    </IconButton>
+                                )}
                             </CardActions>
                         </Card>
                     </Grid>
@@ -117,6 +218,10 @@ function Gra(props) {
                 <Typography variant="body1" align="justify">
                     {gra.opis && gra.opis !== "" ? gra.opis : "Brak opisu..."}
                 </Typography>
+
+                <GraEdytujDialog edytowanaGra={graNaLiscie} statusy={statusy} open={open.edytuj} onClose={() => handleClose("edytuj")} onCancel={() => handleClose("edytuj")} />
+                <GraDodajDialog dodawanaGra={gra} statusy={statusy} open={open.dodaj} onClose={() => handleClose("dodaj")} onCancel={() => handleClose("dodaj")} />
+                <GraUsunDialog usuwanaGra={gra} usunGre={handleDelete} open={open.usun} onClose={() => handleClose("usun")} onCancel={() => handleClose("usun")} />
             </Grid>
         </Grid>
     )

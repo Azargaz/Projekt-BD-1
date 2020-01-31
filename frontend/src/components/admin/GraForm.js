@@ -19,15 +19,7 @@ import DetaleSelect from '../input/DetaleSelect';
 import { AuthContext } from '../../utils/Auth';
 
 const useStyles = makeStyles(theme => ({
-	form: {
-		marginTop: theme.spacing(1)
-	},
-	button: {
-		margin: theme.spacing(2)
-	},
-	header: {
-		margin: 15
-	}
+	...theme.styles
 }));
 
 function Alert(props) {

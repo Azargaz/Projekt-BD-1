@@ -1,13 +1,20 @@
 import React, { useState, useContext } from 'react'
 
 import { AuthContext } from '../utils/Auth';
+import { Link } from 'react-router-dom'
 
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles(theme => ({
+    ...theme.styles
+}));
 
 function Login() {
+    const classes = useStyles();
     const [loginData, setLoginData] = useState({
         login: "",
         haslo: ""
@@ -30,8 +37,8 @@ function Login() {
     return (
         <Grid container justify="center" alignItems="center">
             <Grid item sm={4}>
-            <form onSubmit={handleSubmit}>
-                <Typography variant="h3">
+            <form onSubmit={handleSubmit} className={classes.form}>
+                <Typography variant="h3" className={classes.header}>
                     Logowanie
                 </Typography>
                 <TextField
@@ -61,7 +68,10 @@ function Login() {
                     helperText={errors.authError}
                     error={errors.authError ? true : false}
                 />
-                <Button variant="contained" color="primary" type="submit">
+                <br />
+                <Typography variant="body2">Nie posiadasz konta? <Link to="/rejestruj" style={{color: "inherit"}} tabIndex="-1">Zarejestruj się tutaj.</Link></Typography>
+                <br />
+                <Button variant="contained" color="primary" type="submit" className={classes.button}>
                     Zaloguj się
                 </Button>
             </form>

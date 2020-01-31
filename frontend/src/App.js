@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
+
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import history from "./utils/history";
-import jwtDecode from 'jwt-decode';
+
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { ThemeProvider } from '@material-ui/styles';
+import theme from './utils/theme';
 
 import NavBar from './components/NavBar';
 import Gry from './components/Gry';
 import ListaUzytkownika from './components/ListaUzytkownika';
 import Login from './components/Login';
+import Rejestracja from './components/Rejestracja';
 import Gra from './components/Gra';
 
 import GraAdmin from './components/admin/GraAdmin';
@@ -15,12 +20,10 @@ import GatunekAdmin from './components/admin/GatunekAdmin';
 import PlatformaAdmin from './components/admin/PlatformaAdmin';
 import SeriaGierAdmin from './components/admin/SeriaGierAdmin';
 
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { ThemeProvider } from '@material-ui/styles';
-import theme from './theme';
-
+import jwtDecode from 'jwt-decode';
 import { AuthRoute, UnauthRoute, AdminRoute, AuthProvider } from './utils/Auth';
 import fetchData from './utils/fetchData';
+import WyszukaneGry from './components/WyszukaneGry';
 
 const setToken = (token) => {
     localStorage.setItem('authToken', token);
@@ -115,16 +118,18 @@ function App() {
 			clearErrors
 		}}>
 			<ThemeProvider theme={theme(darkmode)}>
-				<Router history={history}>
+				<Router>
 					<CssBaseline />
 					<NavBar darkmode={darkmode} handleDarkmodeChange={handleDarkmodeChange} />
 					<Switch>
 						<Route exact path="/gry" component={Gry} />
 						<Route exact path="/gra/:id_gra" component={Gra} />
-
+						<Route exact path="/gry/szukaj/:tytul" component={WyszukaneGry} />
+						
 						<AuthRoute exact path="/uzytkownik/lista/:id_uzytkownik" component={ListaUzytkownika} />
 
 						<UnauthRoute exact path="/login" component={Login} />
+						<UnauthRoute exact path="/rejestruj" component={Rejestracja} />
 
 						<AdminRoute exact path="/admin/gra" component={GraAdmin} />
 						<AdminRoute exact path="/admin/firma" component={FirmaAdmin} />

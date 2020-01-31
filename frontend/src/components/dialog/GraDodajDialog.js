@@ -13,17 +13,17 @@ import Button from '@material-ui/core/Button';
 import DetaleSelect from '../input/DetaleSelect';
 import MuiDatePicker from '../input/MuiDatePicker';
 
-function GraEdytujDialog(props) {
-    const { onClose, onCancel, open, edytowanaGra, statusy } = props;
+function GraDodajDialog(props) {
+    const { onClose, onCancel, open, dodawanaGra, statusy } = props;
 
-    const [gra, setGra] = useState(edytowanaGra);
+    const [gra, setGra] = useState(dodawanaGra);
 
     useEffect(() => {
-        setGra(edytowanaGra);
-    }, [edytowanaGra])
+        setGra(dodawanaGra);
+    }, [dodawanaGra])
 
     const handleSubmit = () => {
-        fetchData('PUT', 'uzytkownik/lista', (json) => {
+        fetchData('POST', 'uzytkownik/lista', (json) => {
             onClose(gra);
         }, (err) => {}, {
             'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ function GraEdytujDialog(props) {
         }, JSON.stringify({
             id_gra: gra.id_gra,
             id_status: gra.id_status_gry,
-            ocena: gra.ocena === "" ? null : gra.ocena,
+            ocena: gra.ocena,
             data_rozpoczecia: gra.data_rozpoczecia,
             data_ukonczenia: gra.data_ukonczenia
         }));
@@ -56,7 +56,7 @@ function GraEdytujDialog(props) {
             <DialogTitle id="form-dialog-title">{gra.tytul}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Edytuj gre na swojej liście...
+                    Dodaj gre do swojej listy...
                 </DialogContentText>  
                 <TextField
                     name="ocena"
@@ -96,11 +96,11 @@ function GraEdytujDialog(props) {
                     Anuluj
                 </Button>
                 <Button onClick={handleSubmit} color="primary">
-                    Edytuj
+                    Dodaj
                 </Button>
             </DialogActions>
         </Dialog>
     )
 }
 
-export default GraEdytujDialog
+export default GraDodajDialog

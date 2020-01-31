@@ -21,6 +21,28 @@ router.get('/id/:id_uzytkownik', (req, res) => {
         })
 })
 
+router.get('/id/:id_uzytkownik/:id_gra', (req, res) => {
+    const { id_uzytkownik, id_gra } = req.params;
+
+    db.query("SELECT * FROM projekt.gra_z_listy_uzytkownika($1, $2)", [id_uzytkownik, id_gra])
+        .then(result => {
+            if(result.rows.length > 0) {
+                res.status(201).json(
+                    result.rows[0]
+                )
+            } else {
+                res.status(201).json({});
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
 router.get('/statusy', (req, res) => {
     db.query("SELECT * FROM projekt.status_gry")
         .then(result => {

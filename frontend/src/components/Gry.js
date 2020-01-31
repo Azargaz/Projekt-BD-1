@@ -5,11 +5,9 @@ import Grid from '@material-ui/core/Grid';
 import GraTable from './admin/GraTable';
 import { Typography, makeStyles } from '@material-ui/core';
 
-const useStyles = makeStyles({
-    header: {
-        margin: 15
-    }
-});
+const useStyles = makeStyles(theme => ({
+    ...theme.styles
+}));
 
 function Gry() {
     const classes = useStyles();

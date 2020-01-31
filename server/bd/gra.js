@@ -27,7 +27,10 @@ router.get('/', (req, res) => {
 router.get('/:id_gra', (req, res) => {
     const { id_gra } = req.params;
 
-    db.query('SELECT * FROM projekt.gra WHERE id_gra=$1', [id_gra])
+    db.query(`SELECT g.id_gra, g.tytul, g.opis, g.data_wydania, g.kategoria_wiekowa, sg.tytul as seria 
+                FROM projekt.gra g LEFT JOIN projekt.seria_gier sg USING(id_seria)
+                WHERE id_gra=$1`, 
+        [id_gra])
         .then(result => {
             res.status(201).json(
                 result.rows[0]
@@ -65,9 +68,7 @@ router.get('/top/:liczba_gier', (req, res) => {
 router.post('/tytul', (req, res) => {
     const { tytul } = req.body;
 
-    console.log(tytul);
-
-    db.query("SELECT * FROM projekt.gra WHERE LOWER(tytul) LIKE $1", [`%${tytul.toLowerCase()}%`])
+    db.query("SELECT * FROM projekt.gra WHERE LOWER(tytul) LIKE $1", [`${tytul.toLowerCase()}%`])
         .then(result => {
             res.status(201).json(
                 result.rows

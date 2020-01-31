@@ -13,15 +13,7 @@ import GraEditForm from './GraEditForm';
 import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
-    header: {
-        margin: 15
-    },
-    form: {
-        marginTop: theme.spacing(1),
-    },
-    button: {
-        margin: theme.spacing(2)
-    },
+    ...theme.styles
 }));
 
 function GraAdmin() {

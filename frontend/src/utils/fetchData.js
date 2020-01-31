@@ -10,6 +10,7 @@ const fetchData = (method, url, successCallback, errorCallback=defaultErrorCallb
         })
         .then((json) => {
             if(json.err) throw new Error(json.err);
+            if(json.error) throw new Error(json.error);
             successCallback(json);
         })
         .catch((err) => {

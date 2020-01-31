@@ -20,7 +20,7 @@ function DetaleSelect(props) {
                 value={value}
                 onChange={handleChange}
             >
-                <MenuItem value=""><em>Brak</em></MenuItem>
+                <MenuItem value={null}><em>Brak</em></MenuItem>
                 {loading ? (
                     <CircularProgress/>
                 ) : (

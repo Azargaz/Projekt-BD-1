@@ -23,15 +23,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 
 import GraEdytujDialog from './dialog/GraEdytujDialog';
+import GraUsunDialog from './dialog/GraUsunDialog';
 
-const useStyles = makeStyles({
-    table: {
-        minWidth: 650,
-    },
-    header: {
-        margin: 15
-    }
-});
+const useStyles = makeStyles(theme => ({
+    ...theme.styles
+}));
 
 function ListaUzytkownika(props) {
     const { decodedToken } = useContext(AuthContext);
@@ -43,32 +39,51 @@ function ListaUzytkownika(props) {
     const [loading, setLoading] = useState(false);
     const [selectedGra, setSelectedGra] = useState(null);
     
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState({
+        edytuj: false,
+        usun: false
+    });
 
-    const handleClickOpen = (gra) => {
+    const handleClickOpen = (name, gra) => {
         setSelectedGra(gra);
-        setOpen(true);
+        setOpen({
+            ...open,
+            [name]: true
+        });
     };
 
-    const handleClose = (nowa_gra) => {
-        setOpen(false);
-        const graIndex = gry.findIndex(gra => nowa_gra.id_gra === gra.id_gra);
+    const handleClose = (name, nowaGra) => {
+        setOpen({
+            ...open,
+            [name]: false
+        });
+        const graIndex = gry.findIndex(gra => nowaGra.id_gra === gra.id_gra);
         setGry([
             ...gry.slice(0, graIndex),
-            nowa_gra,
+            nowaGra,
             ...gry.slice(graIndex + 1)
         ]);
     };
 
-    const handleCancel = () => {
-        setOpen(false);
+    const handleDelete = () => {
+        const graIndex = gry.findIndex(gra => selectedGra.id_gra === gra.id_gra);
+        setGry([
+            ...gry.slice(0, graIndex),
+            ...gry.slice(graIndex + 1)
+        ]);
+    }
+
+    const handleCancel = (name) => {
+        setOpen({
+            ...open,
+            [name]: false
+        });
     };
 
     const fetchGry = () => {
         setLoading(true);
         fetchData('GET', `uzytkownik/lista/id/${id_uzytkownik}`, (json) => {
             setGry(json);
-
             fetchData('GET', 'uzytkownik/lista/statusy', (json) => {
                 setStatusy(json);
                 setLoading(false);
@@ -78,10 +93,14 @@ function ListaUzytkownika(props) {
 
     useEffect(() => {
         fetchGry();
-    }, [])
+    }, [id_uzytkownik])
 
     const statusGry = (id_status) => {
-        return statusy.filter(status => status.id_status_gry === id_status)[0].status;
+        const status = statusy.filter(status => status.id_status_gry === id_status)[0];
+        if(status)
+            return status.status;
+        else
+            return "";
     }
 
     const table = loading ? (
@@ -91,7 +110,7 @@ function ListaUzytkownika(props) {
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
                 <TableRow>
-                    <TableCell>Id</TableCell>
+                    <TableCell>#</TableCell>
                     <TableCell align="right">Tytuł</TableCell>
                     <TableCell align="right">Status</TableCell>
                     <TableCell align="right">Ocena</TableCell>
@@ -101,11 +120,9 @@ function ListaUzytkownika(props) {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {gry.map(gra => (
+                {gry.map((gra, index) => (
                     <TableRow hover key={gra.id_gra}>
-                        <TableCell component="th" scope="row">
-                            {gra.id_gra}
-                        </TableCell>
+                        <TableCell component="th" scope="row">{index+1}</TableCell>
                         <TableCell align="right"><Link to={"/gra/" + gra.id_gra} variant="body2" color="inherit" component={RouterLink}>{gra.tytul}</Link></TableCell>
                         <TableCell align="right">{statusGry(gra.id_status_gry)}</TableCell>
                         <TableCell align="right">{gra.ocena}</TableCell>
@@ -118,7 +135,7 @@ function ListaUzytkownika(props) {
                                     aria-label="account of current user"
                                     aria-controls="menu-appbar"
                                     aria-haspopup="true"
-                                    onClick={() => handleClickOpen(gra)}
+                                    onClick={() => handleClickOpen("edytuj", gra)}
                                 >
                                     <EditIcon fontSize="small" />
                                 </IconButton>
@@ -127,6 +144,7 @@ function ListaUzytkownika(props) {
                                     aria-label="account of current user"
                                     aria-controls="menu-appbar"
                                     aria-haspopup="true"
+                                    onClick={() => handleClickOpen("usun", gra)}
                                 >
                                     <DeleteIcon fontSize="small" />
                                 </IconButton>
@@ -145,8 +163,14 @@ function ListaUzytkownika(props) {
                 <Typography variant="h3" className={classes.header}>
                     {parseInt(id_uzytkownik, 10) === decodedToken.id_uzytkownik ? "Twoja lista gier" : "Lista gier użytkownika"}
                 </Typography>
-                {table}
-                {selectedGra && <GraEdytujDialog edytowanaGra={selectedGra} statusy={statusy} open={open} onClose={handleClose} onCancel={handleCancel} />}
+                {!loading && gry.length <= 0 ? (<Typography>Brak gier na liście użytkownika...</Typography>)
+                : table}
+                {selectedGra && (
+                    <>
+                        <GraEdytujDialog edytowanaGra={selectedGra} statusy={statusy} open={open.edytuj} onClose={(nowaGra) => handleClose("edytuj", nowaGra)} onCancel={() => handleCancel("edytuj")} />
+                        <GraUsunDialog usuwanaGra={selectedGra} usunGre={handleDelete} open={open.usun} onClose={() => handleCancel("usun")} onCancel={() => handleCancel("usun")} />
+                    </>
+                )}
             </Grid>
         </Grid>
     )

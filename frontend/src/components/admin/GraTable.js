@@ -16,14 +16,9 @@ import Link from '@material-ui/core/Link';
 
 import fetchData from '../../utils/fetchData';
 
-const useStyles = makeStyles({
-    table: {
-        minWidth: 650,
-    },
-    header: {
-        margin: 15
-    }
-});
+const useStyles = makeStyles(theme => ({
+    ...theme.styles
+}));
 
 function GraTable() {
     const classes = useStyles();
@@ -49,18 +44,16 @@ function GraTable() {
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
                 <TableRow>
-                    <TableCell>Id</TableCell>
+                    <TableCell>#</TableCell>
                     <TableCell align="right">Tytuł</TableCell>
                     <TableCell align="right">Data wydania</TableCell>
                     <TableCell align="right">Kat wiekowa</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
-                {gry.map(gra => (
+                {gry.map((gra, index) => (
                     <TableRow hover key={gra.id_gra}>
-                        <TableCell component="th" scope="row">
-                            {gra.id_gra}
-                        </TableCell>
+                        <TableCell component="th" scope="row">{index+1}</TableCell>
                         <TableCell align="right"><Link to={"/gra/" + gra.id_gra} variant="body1" color="inherit" component={RouterLink}>{gra.tytul}</Link></TableCell>
                         <TableCell align="right">{new Date(gra.data_wydania).toLocaleDateString("pl-PL")}</TableCell>
                         <TableCell align="right">{gra.kategoria_wiekowa}</TableCell>

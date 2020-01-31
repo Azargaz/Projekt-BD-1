@@ -28,15 +28,7 @@ import TabPanel from '../input/TabPanel';
 import DetaleSelect from '../input/DetaleSelect';
 
 const useStyles = makeStyles(theme => ({
-    header: {
-        margin: 15
-    },
-    form: {
-        marginTop: theme.spacing(1),
-    },
-    button: {
-        margin: theme.spacing(2)
-    },
+    ...theme.styles
 }));
 
 function PlatformaAdmin() {

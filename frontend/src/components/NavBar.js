@@ -4,11 +4,12 @@ import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 import Tooltip from '@material-ui/core/Tooltip';
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -30,18 +31,15 @@ import BrightnessIcon from '@material-ui/icons/Brightness5';
 import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
 import SportsEsportsIcon from '@material-ui/icons/SportsEsports';
 import ListAltIcon from '@material-ui/icons/ListAlt';
+import SearchIcon from '@material-ui/icons/Search';
 
 import { AuthContext } from '../utils/Auth';
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        flexGrow: 1,
-    },
-    menuButton: {
-        marginRight: theme.spacing(2),
-    },
-    title: {
-        flexGrow: 1,
+    ...theme.styles,
+    textField: {
+        marginTop: "auto",
+        marginBottom: "auto",
     }
 }));
 
@@ -51,6 +49,8 @@ function NavBar(props) {
     const { authenticated, unauthenticate, decodedToken } = useContext(AuthContext);
     const [open, setOpen] = useState(false);
 
+    const [szukanaGra, setSzukanaGra] = useState("");
+
     const handleClose = () => {
         setOpen(false);
     };
@@ -58,6 +58,10 @@ function NavBar(props) {
     const handleOpen = () => {
         setOpen(true);
     };
+
+    const handleChange = (event) => {
+        setSzukanaGra(event.target.value);
+    }
 
     const adminBar = (
         (decodedToken && decodedToken.admin === true) && (
@@ -120,7 +124,7 @@ function NavBar(props) {
         authenticated ? (
             <React.Fragment>
                 {decodedToken && (
-                <Tooltip title="Lista gier">
+                <Tooltip title="Twoja lista">
                     <IconButton aria-label="gamelist" color="inherit" component={RouterLink} to={`/uzytkownik/lista/${decodedToken.id_uzytkownik}`}>
                         <ListAltIcon />
                     </IconButton>
@@ -133,11 +137,13 @@ function NavBar(props) {
                 </Tooltip>
             </React.Fragment>    
         ) : (
-            <Tooltip title="Zaloguj się">
-                <IconButton aria-label="gamelist" color="inherit" component={RouterLink} to={"/login"}>
-                    <AccountCircleIcon />
-                </IconButton>
-            </Tooltip>
+            <React.Fragment>
+                <Tooltip title="Zaloguj się">
+                    <IconButton aria-label="login" color="inherit" component={RouterLink} to={"/login"}>
+                        <AccountCircleIcon />
+                    </IconButton>
+                </Tooltip>
+            </React.Fragment>
         )
     )
 
@@ -147,7 +153,7 @@ function NavBar(props) {
                 <Link variant="h6" className={classes.title} color="inherit" to="/gry" component={RouterLink} >
                 {decodedToken && decodedToken.imie ? `Witaj w Graweb, ${decodedToken.imie}` : "Graweb"}
                 </Link>
-                <Box mx={1}>
+                <Box mx={2}>
                     <Tooltip title="Gry">
                         <IconButton aria-label="games" color="inherit" component={RouterLink} to={"/gry"}>
                             <SportsEsportsIcon />
@@ -155,7 +161,28 @@ function NavBar(props) {
                     </Tooltip>
                     {authBar}
                 </Box>
-                <Box ml={2}>
+                <Box mx={2}>
+                    <Tooltip title="Szukaj gier">
+                        <Grid container justift="center" alignItems="center">
+                            <Grid item sm={9}>
+                                <TextField
+                                    name="tytul"
+                                    type="text"
+                                    placeholder="Wyszukaj gre..."
+                                    fullWidth
+                                    value={szukanaGra}
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <IconButton aria-label="search" color="inherit" component={RouterLink} to={"/gry/szukaj/" + btoa(szukanaGra)}>
+                                    <SearchIcon />
+                                </IconButton>
+                            </Grid>
+                        </Grid>
+                    </Tooltip>
+                </Box>
+                <Box>
                     <Tooltip title={darkmode ? "Włącz tryb jasny" : "Włącz tryb ciemny"}>
                         <IconButton
                             color="inherit"
