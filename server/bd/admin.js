@@ -66,6 +66,87 @@ router.post('/gra', async (req, res) => {
     }
 })
 
+// UPDATE jednej gry razem ze zmianą wydawców, producentów, gatunków oraz platform
+router.put('/gra', async (req, res) => {
+    const { id_gra, tytul, opis, data_wydania, kategoria_wiekowa, id_seria } = req.body.gra;
+    const { gatunki, wydawcy, producenci, platformy } = req.body.detale;
+    
+    const client = await db.connect()
+
+    try {
+        // Rozpoczęcie transakcji
+        await client.query('BEGIN')
+
+        let queryText = 'UPDATE projekt.gra SET tytul=$2, opis=$3, data_wydania=$4, kategoria_wiekowa=$5, id_seria=$6 WHERE id_gra=$1 RETURNING id_gra'
+        let queryParams = [id_gra, tytul, opis, data_wydania, kategoria_wiekowa, id_seria]
+        let result = await client.query(queryText, queryParams)
+        
+        // INSERT Gatunki
+        await client.query('DELETE FROM projekt.gra_gatunek WHERE id_gra=$1', [id_gra])
+        queryText = 'INSERT INTO projekt.gra_gatunek VALUES '
+        queryParams = [result.rows[0].id_gra]
+        queryText += prepareArrayInsert(gatunki, queryParams);
+        await client.query(queryText, queryParams)
+
+        // INSERT Wydawcy
+        await client.query('DELETE FROM projekt.gra_wydawca WHERE id_gra=$1', [id_gra])
+        queryText = 'INSERT INTO projekt.gra_wydawca VALUES '
+        queryParams = [result.rows[0].id_gra]
+        queryText += prepareArrayInsert(wydawcy, queryParams);
+        await client.query(queryText, queryParams)
+
+        // INSERT Producenci
+        await client.query('DELETE FROM projekt.gra_producent WHERE id_gra=$1', [id_gra])
+        queryText = 'INSERT INTO projekt.gra_producent VALUES '
+        queryParams = [result.rows[0].id_gra]
+        queryText += prepareArrayInsert(producenci, queryParams);
+        await client.query(queryText, queryParams)
+
+        // INSERT Platformy
+        await client.query('DELETE FROM projekt.gra_platforma WHERE id_gra=$1', [id_gra])
+        queryText = 'INSERT INTO projekt.gra_platforma VALUES '
+        queryParams = [result.rows[0].id_gra]
+        queryText += prepareArrayInsert(platformy, queryParams);
+        await client.query(queryText, queryParams)
+        
+        // Zatwierdzenie transakcji
+        await client.query('COMMIT')
+
+        res.status(201).json({
+            msg: `Zmieniono gre o id = ${result.rows[0].id_gra}`
+        })
+    } catch(err) {
+        // Jeśli wystąpi błąd -> cofnięcie transakcji
+        await client.query('ROLLBACK')
+        console.error(err);
+        res.status(500).json({
+            status: "error",
+            error: err.message
+        });
+    } finally {
+        client.release()
+    }
+})
+
+// DELETE jednej gry
+router.delete('/gra/:id_gra', async (req, res) => {
+    const { id_gra } = req.params;
+    
+    db.query("DELETE FROM projekt.gra WHERE id_gra=$1", [id_gra])
+        .then(result => {
+            res.status(201).json(
+                result
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
 // Funkcja przygotowująca zapytanie INSERT z kilkoma wierszami dodawanych danych
 const prepareArrayInsert = (array, queryParams) => {
     let queryText = "";
@@ -345,6 +426,69 @@ router.delete('/seria_gier/:id_seria', (req, res) => {
     const { id_seria } = req.params;
     
     db.query("DELETE FROM projekt.seria_gier WHERE id_seria=$1", [id_seria])
+        .then(result => {
+            res.status(201).json(
+                result
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+router.get('/recenzja', (req, res) => {
+    db.query("SELECT * FROM projekt.recenzja")
+        .then(result => {
+            res.status(201).json(
+                result.rows
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+router.delete('/recenzja/:id_uzytkownik/:id_gra', (req, res) => {
+    const { id_uzytkownik, id_gra } = req.params;
+    
+    db.query("DELETE FROM projekt.recenzja WHERE id_uzytkownik=$1 AND id_gra=$2", [id_uzytkownik, id_gra])
+        .then(result => {
+            res.status(201).json(
+                result
+            )
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+router.get('/uzytkownik', (req, res) => {
+    db.query('SELECT id_uzytkownik, login, imie, nazwisko, email FROM projekt.uzytkownik')
+        .then(result => {
+            res.json(result.rows);
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json(err.message);
+        })
+})
+
+router.delete('/uzytkownik/:id_uzytkownik', (req, res) => {
+    const { id_uzytkownik } = req.params;
+    
+    db.query("DELETE FROM projekt.uzytkownik WHERE id_uzytkownik=$1", [id_uzytkownik])
         .then(result => {
             res.status(201).json(
                 result

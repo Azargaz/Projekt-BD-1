@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 
 import fetchData from '../../utils/fetchData';
+import { AuthContext } from '../../utils/Auth';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -15,6 +16,7 @@ import MuiDatePicker from '../input/MuiDatePicker';
 
 function GraEdytujDialog(props) {
     const { onClose, onCancel, open, edytowanaGra, statusy } = props;
+    const { token } = useContext(AuthContext);
 
     const [gra, setGra] = useState(edytowanaGra);
 
@@ -27,7 +29,7 @@ function GraEdytujDialog(props) {
             onClose(gra);
         }, (err) => {}, {
             'Content-Type': 'application/json',
-            'authorization': localStorage.authToken
+            'authorization': token
         }, JSON.stringify({
             id_gra: gra.id_gra,
             id_status: gra.id_status_gry,

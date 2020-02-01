@@ -3,7 +3,7 @@
 CREATE OR REPLACE FUNCTION najlepsze_gry_limit ( lim int )
 RETURNS SETOF projekt.najlepsze_gry
 AS $$
-    SELECT * FROM projekt.najlepsze_gry LIMIT lim;
+    SELECT * FROM projekt.najlepsze_gry WHERE srednia_ocen IS NOT NULL AND srednia_ocen > 0 LIMIT lim;
 $$ LANGUAGE SQL;
 
 -- Najnowsze gry limit

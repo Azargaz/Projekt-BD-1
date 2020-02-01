@@ -193,7 +193,7 @@ function PlatformaAdmin() {
             <Grid item sm={8}>
                 <form className={classes.form} onSubmit={handleEditSubmit}>
                     <DetaleSelect 
-                        label="Platforma"
+                        label="Wybierz platforme"
                         id_name="id_platforma"
                         db_id_name="id_platforma"
                         name="nazwa"

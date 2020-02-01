@@ -30,7 +30,6 @@ const useStyles = makeStyles(theme => ({
     ...theme.styles
 }));
 
-
 function SeriaGierAdmin() {
     const classes = useStyles();
     const { token } = useContext(AuthContext);
@@ -193,7 +192,7 @@ function SeriaGierAdmin() {
             <Grid item sm={8}>
                 <form className={classes.form} onSubmit={handleEditSubmit}>
                     <DetaleSelect 
-                        label="Seria gier"
+                        label="Wybierz serie gier"
                         id_name="id_seria"
                         db_id_name="id_seria"
                         name="tytul"

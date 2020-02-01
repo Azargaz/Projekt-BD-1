@@ -24,6 +24,10 @@ function GraAdmin() {
         setTab(newTab);
     };
 
+    const resetTab = () => {
+        setTab(0);
+    }
+
     return (
         <Grid container justify="center" alignItems="center">
             <Grid item sm={8}>
@@ -46,14 +50,14 @@ function GraAdmin() {
                     <TabPanel value={tab} index={1}>
                         <Grid container justify="center" alignItems="center">
                             <Grid item sm={8}>
-                                <GraForm />
+                                <GraForm onSubmit={resetTab} />
                             </Grid>
                         </Grid>
                     </TabPanel>
                     <TabPanel value={tab} index={2}>
                         <Grid container justify="center" alignItems="center">
                             <Grid item sm={8}>
-                                <GraEditForm />
+                                <GraEditForm onSubmit={resetTab} />
                             </Grid>
                         </Grid>
                     </TabPanel>

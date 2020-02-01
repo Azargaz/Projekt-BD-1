@@ -70,7 +70,18 @@ app.get('/', (req, res) => {
 app.use('/gra', gra)
 app.use('/uzytkownik', uzytkownik)
 app.use('/recenzje', recenzje)
-app.use('/admin', auth, admin)
+app.use('/admin', auth, (req, res, next) => {
+    if(req.user.admin) {
+        next();
+    } else {
+        console.error("Użytkownik nie jest administratorem!");
+        res.status(404).json({
+            status: "error",
+            msg: "Użytkownik nie jest administratorem!"
+        });
+        return;
+    }
+}, admin)
 
 app.listen(port, () => {
     console.log(`Aplikacja nasłuchuje port ${port}.`)

@@ -44,8 +44,8 @@ router.get('/', (req, res) => {
         })
 })
 
-// SELECT wydawców, producentów, platform i gatunków jednej gry o id_gra = :id_gra
-router.get('/:id_gra', (req, res) => {
+// SELECT wydawców, producentów, platform i gatunków jednej gry o id_gra = :id_gra w formie łancuchów znaków np. wydawcy: 'WydawcaA, WydawcaB, WydawcaC'
+router.get('/string/:id_gra', (req, res) => {
     let results = {};
     const { id_gra } = req.params;
 
@@ -75,6 +75,50 @@ router.get('/:id_gra', (req, res) => {
             results = {
                 ...results,
                 platformy: platforma_result.rows[0]
+            }
+            res.status(201).json(results);
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({
+                status: "error",
+                error: err.message
+            });
+        })
+})
+
+
+// SELECT wydawców, producentów, platform i gatunków jednej gry o id_gra = :id_gra w formie tabeli zapisanyc jako JSON
+router.get('/json/:id_gra', (req, res) => {
+    let results = {};
+    const { id_gra } = req.params;
+
+    db.query('SELECT id_wydawca FROM projekt.wydawcy_gry WHERE id_gra=$1', [id_gra])
+        .then(wydawcy_result => {
+            results = {
+                ...results,
+                wydawcy: wydawcy_result.rows
+            }
+            return db.query('SELECT id_producent FROM projekt.producenci_gry WHERE id_gra=$1', [id_gra]);
+        })
+        .then(producenci_result => {
+            results = {
+                ...results,
+                producenci: producenci_result.rows
+            }
+            return db.query('SELECT id_gatunek FROM projekt.gatunki_gry WHERE id_gra=$1', [id_gra]);
+        })
+        .then(gatunek_result => {
+            results = {
+                ...results,
+                gatunki: gatunek_result.rows
+            }
+            return db.query('SELECT id_platforma FROM projekt.platformy_gry WHERE id_gra=$1', [id_gra]);
+        })
+        .then(platforma_result => {
+            results = {
+                ...results,
+                platformy: platforma_result.rows
             }
             res.status(201).json(results);
         })

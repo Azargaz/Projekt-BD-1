@@ -4,6 +4,7 @@ const apiURL = "http://localhost:3001/";
 // const apiURL = "http://pascal.fis.agh.edu.pl:3001/";
 
 const fetchData = (method, url, successCallback, errorCallback=defaultErrorCallback, headers={}, body="") => {
+    // console.log('Fetching from:', apiURL + url, ' with method', method);
     fetch(apiURL + url, method === 'GET' ? {headers} : (body === "" ? {method, headers} : {method, headers, body}))
         .then((response) => {
             return response.json();

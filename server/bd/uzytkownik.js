@@ -4,21 +4,11 @@ const jwt = require('jsonwebtoken')
 const db = require('./polaczenie')
 
 const lista = require('./lista')
+const auth = require('../utils/authorization')
 
 router.use('/lista', lista)
 
-router.get('/', (req, res) => {
-    db.query('SELECT id_uzytkownik, imie, nazwisko, email FROM projekt.uzytkownik')
-        .then(result => {
-            res.json(result.rows);
-        })
-        .catch(err => {
-            console.error(err);
-            res.status(500).json(err.message);
-        })
-})
-
-router.get('/:id_uzytkownik', (req, res) => {
+router.get('/:id_uzytkownik', auth, (req, res) => {
     const { id_uzytkownik } = req.params;
     db.query('SELECT id_uzytkownik, imie, nazwisko, email FROM projekt.uzytkownik WHERE id_uzytkownik = $1', [id_uzytkownik])
         .then(result => {

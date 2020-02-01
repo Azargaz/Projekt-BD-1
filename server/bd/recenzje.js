@@ -3,11 +3,15 @@ const router = require('express').Router()
 const db = require('./polaczenie')
 const auth = require('../utils/authorization')
 
-router.get('/', (req, res) => {
-    db.query('SELECT * FROM projekt.recenzja')
+router.get('/recenzja/:id_uzytkownik/:id_gra', (req, res) => {
+    const { id_uzytkownik, id_gra } = req.params;
+
+    db.query(`SELECT u.login, g.tytul, r.tekst, r.ocena, r.data FROM projekt.recenzja r JOIN projekt.uzytkownik u USING(id_uzytkownik) JOIN projekt.gra g USING(id_gra)
+            WHERE r.id_uzytkownik=$1 AND r.id_gra=$2`,
+        [id_uzytkownik, id_gra])
         .then(result => {
             res.status(201).json(
-                result.rows
+                result.rows[0]
             )
         })
         .catch(err => {
@@ -23,10 +27,11 @@ router.get('/ostatnie', (req, res) => {
 
 })
 
-router.get('/uzytkownik/:id_uzytkownik', (req, res) => {
-    const { id_uzytkownik } = req.params;
+router.get('/uzytkownik/:id_gra', auth, (req, res) => {
+    const { id_gra } = req.params;
+    const { id_uzytkownik } = req.user;
 
-    db.query("SELECT * FROM recenzje_uzytkownicy WHERE id_uzytkownik = $1", [id_uzytkownik])
+    db.query("SELECT * FROM recenzje_uzytkownicy WHERE id_uzytkownik = $1 AND id_gra = $2", [id_uzytkownik, id_gra])
         .then(result => {
             res.status(201).json(
                 result.rows

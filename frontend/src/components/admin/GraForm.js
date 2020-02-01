@@ -7,14 +7,12 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
-
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import MuiAlert from '@material-ui/lab/Alert';
+import Typography from '@material-ui/core/Typography';
 
 import MuiDatePicker from '../input/MuiDatePicker';
 import DetaleCheckboxList from '../input/DetaleCheckboxList';
 import DetaleSelect from '../input/DetaleSelect';
+import Alert from '../Alert';
 
 import { AuthContext } from '../../utils/Auth';
 
@@ -22,11 +20,9 @@ const useStyles = makeStyles(theme => ({
 	...theme.styles
 }));
 
-function Alert(props) {
-	return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+function GraForm(props) {
+	const { onSubmit } = props;
 
-function GraForm() {
     const classes = useStyles();
     const { token } = useContext(AuthContext);
 	const [open, setOpen] = useState(false);
@@ -35,7 +31,7 @@ function GraForm() {
 		opis: '',
 		data_wydania: null,
 		kategoria_wiekowa: '',
-		id_seria: ''
+		id_seria: null
 	});
 	const [detale, setDetale] = useState({
 		gatunki: [],
@@ -52,13 +48,10 @@ function GraForm() {
     });
     
 	const [errors, setErrors] = useState([]);
-	const [loading, setLoading] = useState(false);
 
 	const fetchDetails = () => {
-		setLoading(true);
 		fetchData('GET', 'gra/detale', json => {
 			setFetchedDetails(json);
-			setLoading(false);
 		});
 	};
 
@@ -72,7 +65,7 @@ function GraForm() {
 			opis: '',
 			data_wydania: null,
 			kategoria_wiekowa: '',
-			id_seria: ''
+			id_seria: null
 		});
 
 		setDetale({
@@ -82,6 +75,11 @@ function GraForm() {
             platformy: []
 		});
 	};
+
+	const handleErrors = () => {
+		if(errors)
+			setOpen(true);
+	}
 
 	const handleClose = (event, reason) => {
 		if (reason === 'clickaway') {
@@ -93,21 +91,24 @@ function GraForm() {
 	const handleSubmit = async event => {
 		event.preventDefault();
 
-		Object.keys(detale).forEach(key => {
-			if(detale[key].length <= 0) return;
+		const walidacjaDetali = Object.keys(detale).filter(key => {
+			return detale[key].length > 0;
 		})
 
-		fetchData(
-			'POST',
-			'admin/gra',
-			json => {
-				console.log(json);
+		if(walidacjaDetali.length < 4) {
+			setErrors({
+				msg: "Proszę wybrać wszystkie detale gry."
+			});
+			handleErrors();
+			return;
+		}
+
+		fetchData('POST', 'admin/gra', json => {
 				setOpen(true);
 				clearForm();
+				onSubmit();
 			},
-			err => {
-				setErrors([...errors, err]);
-			},
+			err => {},
 			{
                 'Content-Type': 'application/json',
                 Authorization: token
@@ -175,6 +176,8 @@ function GraForm() {
 					placeholder="Opis"
 					margin="normal"
 					fullWidth
+					multiline
+					rows={3}
 					onChange={handleChangeGra}
 					value={gra.opis}
 				/>
@@ -207,12 +210,13 @@ function GraForm() {
                     required
                 />
 
-				<Grid
-					container
-					justify="center"
-					alignItems="center"
-				>
-					<Grid item sm={3}>
+				<br />
+				<br />
+				<Typography variant="caption" color="textSecondary">
+					Detale gry *
+				</Typography>
+				<Grid container justify="center">
+					<Grid item>
 						<DetaleCheckboxList
 							nazwa="gatunki"
 							label="Gatunki"
@@ -223,7 +227,7 @@ function GraForm() {
 							handleChange={handleChangeDetale}
 						/>
 					</Grid>
-					<Grid item sm={3}>
+					<Grid item>
 						<DetaleCheckboxList
 							nazwa="wydawcy"
 							label="Wydawcy"
@@ -234,7 +238,7 @@ function GraForm() {
 							handleChange={handleChangeDetale}
 						/>
 					</Grid>
-					<Grid item sm={3}>
+					<Grid item>
 						<DetaleCheckboxList
 							nazwa="producenci"
 							label="Producenci"
@@ -245,7 +249,7 @@ function GraForm() {
 							handleChange={handleChangeDetale}
 						/>
 					</Grid>
-					<Grid item sm={3}>
+					<Grid item>
 						<DetaleCheckboxList
 							nazwa="platformy"
 							label="Platformy"
@@ -268,7 +272,7 @@ function GraForm() {
 				</Button>
 				<Button
 					variant="contained"
-					color="secondary"
+					color="primary"
 					className={classes.button}
 					onClick={clearForm}>
 					Reset
@@ -280,29 +284,10 @@ function GraForm() {
 					horizontal: 'left'
 				}}
 				open={open}
-				autoHideDuration={5000}
-				onClose={handleClose}
-				message="Dodano gre"
-				action={
-					<IconButton
-						size="small"
-						aria-label="close"
-						color="inherit"
-						onClick={handleClose}>
-						<CloseIcon fontSize="small" />
-					</IconButton>
-				}
-			/>
-			<Snackbar
-				anchorOrigin={{
-					vertical: 'bottom',
-					horizontal: 'left'
-				}}
-				open={errors.length > 0}
-				autoHideDuration={5000}
+				autoHideDuration={3000}
 				onClose={handleClose}>
 				<Alert severity="error">
-					{/* {errors.length > 0 ? errors[errors.length - 1] : ''} */}
+					{errors ? errors.msg : ''}
 				</Alert>
 			</Snackbar>
 		</>

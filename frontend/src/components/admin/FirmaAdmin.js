@@ -165,7 +165,7 @@ function FirmaAdmin() {
                                 <TableCell align="right">{firma.nazwa}</TableCell>
                                 <TableCell align="right">{firma.siedziba}</TableCell>
                                 <TableCell align="right">
-                                    <Link href={firma.strona_www} target="_blank" rel="noopener" rel="noreferrer" color="secondary">
+                                    <Link href={firma.strona_www} target="_blank" rel="noopener noreferrer" color="secondary">
                                         {firma.strona_www !== null ? firma.strona_www : ""}
                                     </Link>
                                 </TableCell>
@@ -230,7 +230,7 @@ function FirmaAdmin() {
             <Grid item sm={8}>
                 <form className={classes.form} onSubmit={handleEditSubmit}>
                     <DetaleSelect 
-                        label="Firma"
+                        label="Wybierz firme *"
                         id_name="id_firma"
                         db_id_name="id_firma"
                         name="nazwa"

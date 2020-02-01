@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 
 import fetchData from '../utils/fetchData';
 
@@ -32,7 +32,6 @@ function Rejestracja() {
         event.preventDefault();
         fetchData('POST', 'uzytkownik', (json) => {
             console.log(json);
-            clearErrors();
             clearForm();
         }, (err) => {
             setErrors(err);
@@ -58,6 +57,7 @@ function Rejestracja() {
             imie: "",
             nazwisko: ""
         })
+        clearErrors();
     }
 
     return (

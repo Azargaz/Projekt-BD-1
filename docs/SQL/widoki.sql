@@ -22,7 +22,7 @@ SELECT g.id_gra, g.tytul, g.data_wydania, g.kategoria_wiekowa, sg.tytul as seria
     LEFT JOIN projekt.seria_gier sg
     ON sg.id_seria = g.id_seria
     GROUP BY g.id_gra, sg.tytul
-    ORDER BY srednia_ocen
+    ORDER BY srednia_ocen DESC
 ;
 
 -- Najnowsze gry
@@ -91,39 +91,39 @@ SELECT g.*, gp.id_platforma
 
 -- Wydawcy gier
 
--- CREATE OR REPLACE VIEW wydawcy_gry
--- AS
--- SELECT *
---     FROM projekt.firma f JOIN projekt.gra_wydawca gw
---     ON f.id_firma = gw.id_wydawca
--- ;
+CREATE OR REPLACE VIEW wydawcy_gry
+AS
+SELECT *
+    FROM projekt.firma f JOIN projekt.gra_wydawca gw
+    ON f.id_firma = gw.id_wydawca
+;
 
--- -- Producenci gier
+-- Producenci gier
 
--- CREATE OR REPLACE VIEW producenci_gry
--- AS
--- SELECT *
---     FROM projekt.firma f JOIN projekt.gra_producent gp
---     ON f.id_firma = gp.id_producent
--- ;
+CREATE OR REPLACE VIEW producenci_gry
+AS
+SELECT *
+    FROM projekt.firma f JOIN projekt.gra_producent gp
+    ON f.id_firma = gp.id_producent
+;
 
--- -- Gatunki gier
+-- Gatunki gier
 
--- CREATE OR REPLACE VIEW gatunki_gry
--- AS
--- SELECT *
---     FROM projekt.gatunek g JOIN projekt.gra_gatunek gg
---     USING(id_gatunek)
--- ;
+CREATE OR REPLACE VIEW gatunki_gry
+AS
+SELECT *
+    FROM projekt.gatunek g JOIN projekt.gra_gatunek gg
+    USING(id_gatunek)
+;
 
--- -- Platformy gier
+-- Platformy gier
 
--- CREATE OR REPLACE VIEW platformy_gry
--- AS
--- SELECT *
---     FROM projekt.platforma p JOIN projekt.gra_platforma gp
---     USING(id_platforma)
--- ;
+CREATE OR REPLACE VIEW platformy_gry
+AS
+SELECT *
+    FROM projekt.platforma p JOIN projekt.gra_platforma gp
+    USING(id_platforma)
+;
 
 -- Recenzje uzytkowników
 

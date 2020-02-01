@@ -106,64 +106,75 @@ function ListaUzytkownika(props) {
     const table = loading ? (
         <CircularProgress/>
     ) : (
-        <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-                <TableRow>
-                    <TableCell>#</TableCell>
-                    <TableCell align="right">Tytuł</TableCell>
-                    <TableCell align="right">Status</TableCell>
-                    <TableCell align="right">Ocena</TableCell>
-                    <TableCell align="right">Data rozpoczęcia</TableCell>
-                    <TableCell align="right">Data ukończenia</TableCell>
-                    { decodedToken.id_uzytkownik === parseInt(id_uzytkownik, 10) && <TableCell align="center">Akcje</TableCell> }
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {gry.map((gra, index) => (
-                    <TableRow hover key={gra.id_gra}>
-                        <TableCell component="th" scope="row">{index+1}</TableCell>
-                        <TableCell align="right"><Link to={"/gra/" + gra.id_gra} variant="body2" color="inherit" component={RouterLink}>{gra.tytul}</Link></TableCell>
-                        <TableCell align="right">{statusGry(gra.id_status_gry)}</TableCell>
-                        <TableCell align="right">{gra.ocena}</TableCell>
-                        <TableCell align="right">{gra.data_rozpoczecia ? new Date(gra.data_rozpoczecia).toLocaleDateString("pl-PL") : ""}</TableCell>
-                        <TableCell align="right">{gra.data_ukonczenia ? new Date(gra.data_ukonczenia).toLocaleDateString("pl-PL") : ""}</TableCell>
-                        { decodedToken.id_uzytkownik === parseInt(id_uzytkownik, 10) && (
-                            <TableCell align="center">
-                                <IconButton
-                                    color="inherit"
-                                    aria-label="account of current user"
-                                    aria-controls="menu-appbar"
-                                    aria-haspopup="true"
-                                    onClick={() => handleClickOpen("edytuj", gra)}
-                                >
-                                    <EditIcon fontSize="small" />
-                                </IconButton>
-                                <IconButton
-                                    color="inherit"
-                                    aria-label="account of current user"
-                                    aria-controls="menu-appbar"
-                                    aria-haspopup="true"
-                                    onClick={() => handleClickOpen("usun", gra)}
-                                >
-                                    <DeleteIcon fontSize="small" />
-                                </IconButton>
-                            </TableCell>
-                        )}
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-        </TableContainer>
-    )
+        statusy.map(status => {
+            const gryStatusu = gry.filter(gra => gra.id_status_gry === status.id_status_gry);
+
+            return gryStatusu.length > 0 ? (
+                <div key={status.id_status_gry}>
+                <Typography variant="h5" className={classes.header}>
+                    {status.status}
+                </Typography>
+                <TableContainer component={Paper}>
+                    <Table className={classes.table} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>#</TableCell>
+                                <TableCell align="right">Tytuł</TableCell>
+                                <TableCell align="right">Status</TableCell>
+                                <TableCell align="right">Ocena</TableCell>
+                                <TableCell align="right">Data rozpoczęcia</TableCell>
+                                <TableCell align="right">Data ukończenia</TableCell>
+                                { decodedToken.id_uzytkownik === parseInt(id_uzytkownik, 10) && <TableCell align="center">Akcje</TableCell> }
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {gryStatusu.map((gra, index) => (
+                                <TableRow hover key={gra.id_gra}>
+                                    <TableCell component="th" scope="row">{index+1}</TableCell>
+                                    <TableCell align="right"><Link to={"/gra/" + gra.id_gra} variant="body2" color="inherit" component={RouterLink}>{gra.tytul}</Link></TableCell>
+                                    <TableCell align="right">{statusGry(gra.id_status_gry)}</TableCell>
+                                    <TableCell align="right">{gra.ocena}</TableCell>
+                                    <TableCell align="right">{gra.data_rozpoczecia ? new Date(gra.data_rozpoczecia).toLocaleDateString("pl-PL") : ""}</TableCell>
+                                    <TableCell align="right">{gra.data_ukonczenia ? new Date(gra.data_ukonczenia).toLocaleDateString("pl-PL") : ""}</TableCell>
+                                    { decodedToken.id_uzytkownik === parseInt(id_uzytkownik, 10) && (
+                                        <TableCell align="center">
+                                            <IconButton
+                                                color="inherit"
+                                                aria-label="account of current user"
+                                                aria-controls="menu-appbar"
+                                                aria-haspopup="true"
+                                                onClick={() => handleClickOpen("edytuj", gra)}
+                                            >
+                                                <EditIcon fontSize="small" />
+                                            </IconButton>
+                                            <IconButton
+                                                color="inherit"
+                                                aria-label="account of current user"
+                                                aria-controls="menu-appbar"
+                                                aria-haspopup="true"
+                                                onClick={() => handleClickOpen("usun", gra)}
+                                            >
+                                                <DeleteIcon fontSize="small" />
+                                            </IconButton>
+                                        </TableCell>
+                                    )}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                </div>
+            ) : ""
+        })
+    );
 
     return (
         <Grid container justify="center" alignItems="center">
             <Grid item sm={8}>
                 <Typography variant="h3" className={classes.header}>
-                    {parseInt(id_uzytkownik, 10) === decodedToken.id_uzytkownik ? "Twoja lista gier" : "Lista gier użytkownika"}
+                    {parseInt(id_uzytkownik, 10) === decodedToken.id_uzytkownik ? "Twoja lista gier" : "Lista gier użytkownika " + id_uzytkownik}
                 </Typography>
-                {!loading && gry.length <= 0 ? (<Typography>Brak gier na liście użytkownika...</Typography>)
+                {!loading && gry.length <= 0 ? (<Typography variant="caption" className={classes.header}>Brak gier na liście użytkownika...</Typography>)
                 : table}
                 {selectedGra && (
                     <>

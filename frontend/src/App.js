@@ -7,6 +7,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/styles';
 import theme from './utils/theme';
 
+import StronaGlowna from './components/StronaGlowna';
 import NavBar from './components/NavBar';
 import Gry from './components/Gry';
 import ListaUzytkownika from './components/ListaUzytkownika';
@@ -24,6 +25,9 @@ import jwtDecode from 'jwt-decode';
 import { AuthRoute, UnauthRoute, AdminRoute, AuthProvider } from './utils/Auth';
 import fetchData from './utils/fetchData';
 import WyszukaneGry from './components/WyszukaneGry';
+import NajlepszeGry from './components/NajlepszeGry';
+import RecenzjeAdmin from './components/admin/RecenzjeAdmin';
+import UzytkownikAdmin from './components/admin/UzytkownikAdmin';
 
 const setToken = (token) => {
     localStorage.setItem('authToken', token);
@@ -122,9 +126,12 @@ function App() {
 					<CssBaseline />
 					<NavBar darkmode={darkmode} handleDarkmodeChange={handleDarkmodeChange} />
 					<Switch>
+						<Route exact path="/" component={StronaGlowna} />
+
 						<Route exact path="/gry" component={Gry} />
 						<Route exact path="/gra/:id_gra" component={Gra} />
 						<Route exact path="/gry/szukaj/:tytul" component={WyszukaneGry} />
+						<Route exact path="/gry/top/:top" component={NajlepszeGry} />
 						
 						<AuthRoute exact path="/uzytkownik/lista/:id_uzytkownik" component={ListaUzytkownika} />
 
@@ -136,6 +143,8 @@ function App() {
 						<AdminRoute exact path="/admin/gatunek" component={GatunekAdmin} />
 						<AdminRoute exact path="/admin/platforma" component={PlatformaAdmin} />
 						<AdminRoute exact path="/admin/seria_gier" component={SeriaGierAdmin} />
+						<AdminRoute exact path="/admin/recenzja" component={RecenzjeAdmin} />
+						<AdminRoute exact path="/admin/uzytkownik" component={UzytkownikAdmin} />
 					</Switch>
 				</Router>
 			</ThemeProvider>

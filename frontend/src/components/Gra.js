@@ -6,6 +6,7 @@ import { AuthContext } from '../utils/Auth';
 import GraEdytujDialog from './dialog/GraEdytujDialog';
 import GraDodajDialog from './dialog/GraDodajDialog';
 import GraUsunDialog from './dialog/GraUsunDialog';
+import RecenzjaDodajDialog from './dialog/RecenzjaDodajDialog';
 
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -17,10 +18,13 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import CommentIcon from '@material-ui/icons/Comment';
+
+import Tooltip from '@material-ui/core/Tooltip';
 
 function Gra(props) {
     const { id_gra } = props.match.params;
-    const { decodedToken, authenticated } = useContext(AuthContext);
+    const { decodedToken, authenticated, token } = useContext(AuthContext);
 
     const [loading, setLoading] = useState(false);
 
@@ -40,10 +44,14 @@ function Gra(props) {
     })
     
     const [statusy, setStatusy] = useState([]);
+
+    const [zrecenzowana, setZrecenzowana] = useState(true);
+
     const [open, setOpen] = useState({
         edytuj: false,
         dodaj: false,
-        usun: false
+        usun: false,
+        recenzja: false
     });
 
     const statusGry = (id_status) => {
@@ -65,7 +73,7 @@ function Gra(props) {
         fetchData('GET', `gra/${id_gra}`, (json) => {
             setGra(json);
 
-            fetchData('GET', `gra/detale/${id_gra}`, (json) => {
+            fetchData('GET', `gra/detale/string/${id_gra}`, (json) => {
                 setDetale(json);
 
                 if(authenticated) {
@@ -77,6 +85,16 @@ function Gra(props) {
             fetchData('GET', 'uzytkownik/lista/statusy', (json) => {
                 setStatusy(json);
             });
+
+            fetchData('GET', `recenzje/uzytkownik/${id_gra}`, (json) => {
+                if(json.length > 0) 
+                    setZrecenzowana(true);
+                else
+                    setZrecenzowana(false);
+            }, (err) => {},
+            {
+                Authorization: token
+            })
         });
     }, [id_gra])
 
@@ -186,25 +204,42 @@ function Gra(props) {
                             <CardActions>
                                 {!authenticated || loading ? "" : graNaLiscie.id_gra ? 
                                     (<>
+                                        <Tooltip title="Edytuj na swojej liście">
                                         <IconButton
                                             color="inherit"
                                             onClick={() => handleClickOpen("edytuj")}
                                         >
                                             <EditIcon fontSize="small" />
                                         </IconButton>
+                                        </Tooltip>
+                                        
+                                        <Tooltip title="Usuń ze swojej listy">
                                         <IconButton
                                             color="inherit"
                                             onClick={() => handleClickOpen("usun")}
                                         >
                                             <DeleteIcon fontSize="small" />
                                         </IconButton>
+                                        </Tooltip>
+                                        
+                                        {!zrecenzowana && (
+                                        <Tooltip title="Napisz recenzje">
+                                        <IconButton
+                                            color="inherit"
+                                            onClick={() => handleClickOpen("recenzja")}
+                                        >
+                                            <CommentIcon fontSize="small" />
+                                        </IconButton>
+                                        </Tooltip>)}
                                     </>) : (
+                                    <Tooltip title="Dodaj do swojej listy">
                                     <IconButton
                                         color="inherit"
                                         onClick={() => handleClickOpen("dodaj")}
                                     >
                                         <AddIcon fontSize="small" />
                                     </IconButton>
+                                    </Tooltip>
                                 )}
                             </CardActions>
                         </Card>
@@ -218,6 +253,8 @@ function Gra(props) {
                 <Typography variant="body1" align="justify">
                     {gra.opis && gra.opis !== "" ? gra.opis : "Brak opisu..."}
                 </Typography>
+
+                <RecenzjaDodajDialog recenzowanaGra={graNaLiscie} open={open.recenzja} onClose={() => handleClose("recenzja")} onCancel={() => handleClose("recenzja")} />
 
                 <GraEdytujDialog edytowanaGra={graNaLiscie} statusy={statusy} open={open.edytuj} onClose={() => handleClose("edytuj")} onCancel={() => handleClose("edytuj")} />
                 <GraDodajDialog dodawanaGra={gra} statusy={statusy} open={open.dodaj} onClose={() => handleClose("dodaj")} onCancel={() => handleClose("dodaj")} />

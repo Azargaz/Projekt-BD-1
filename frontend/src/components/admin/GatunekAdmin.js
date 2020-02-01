@@ -193,7 +193,7 @@ function GatunekAdmin() {
             <Grid item sm={8}>
                 <form className={classes.form} onSubmit={handleEditSubmit}>
                     <DetaleSelect 
-                        label="Gatunek"
+                        label="Wybierz gatunek *"
                         id_name="id_gatunek"
                         db_id_name="id_gatunek"
                         name="nazwa"

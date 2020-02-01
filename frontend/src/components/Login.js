@@ -34,6 +34,20 @@ function Login() {
         });
     }
 
+    const handleAdmin = () => {
+        setLoginData({
+            login: "admin",
+            haslo: "admin"
+        })
+    }
+
+    const handleUser = () => {
+        setLoginData({
+            login: "jan123",
+            haslo: "123456"
+        })
+    }
+
     return (
         <Grid container justify="center" alignItems="center">
             <Grid item sm={4}>
@@ -73,6 +87,13 @@ function Login() {
                 <br />
                 <Button variant="contained" color="primary" type="submit" className={classes.button}>
                     Zaloguj się
+                </Button>
+                
+                <Button variant="contained" color="secondary" className={classes.button} onClick={handleAdmin}>
+                    Test admin
+                </Button>
+                <Button variant="contained" color="secondary" className={classes.button} onClick={handleUser}>
+                    Test użytkownik
                 </Button>
             </form>
             </Grid>
