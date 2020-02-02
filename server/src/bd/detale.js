@@ -1,8 +1,18 @@
+/**
+ * Detale, podmoduł modułu Gra, zawiera funkcje obsługujące detale gier
+ * @module bd/gra/detale
+ * @see module:bd/gra
+ */
+
 const router = require('express').Router()
 
 const db = require('./polaczenie')
 
-// SELECT firm, platform, gatunków i serii gier
+/**
+ * SELECT firm, platform, gatunków i serii gier
+ * @name detale get
+ * @function
+ */
 router.get('/', (req, res) => {
     let results = {};
 
@@ -44,7 +54,11 @@ router.get('/', (req, res) => {
         })
 })
 
-// SELECT wydawców, producentów, platform i gatunków jednej gry o id_gra = :id_gra w formie łancuchów znaków np. wydawcy: 'WydawcaA, WydawcaB, WydawcaC'
+/**
+ *  SELECT wydawców, producentów, platform i gatunków jednej gry o id_gra = :id_gra w formie łancuchów znaków np. wydawcy: 'WydawcaA, WydawcaB, WydawcaC'
+ * @name detale/string/:id_gra get
+ * @function
+ */
 router.get('/string/:id_gra', (req, res) => {
     let results = {};
     const { id_gra } = req.params;
@@ -87,7 +101,11 @@ router.get('/string/:id_gra', (req, res) => {
         })
 })
 
-// SELECT wydawców, producentów, platform i gatunków jednej gry o id_gra = :id_gra w formie tabeli zapisanyc jako JSON
+/** 
+ * SELECT wydawców, producentów, platform i gatunków jednej gry o id_gra = :id_gra w formie tabeli zapisanyc jako JSON
+ * @name detale/json/:id_gra get
+ * @function
+ */
 router.get('/json/:id_gra', (req, res) => {
     let results = {};
     const { id_gra } = req.params;

@@ -1,12 +1,26 @@
+/**
+ * Modułu Gra, zawiera funkcje obsługujące gry
+ * @module bd/gra
+ */
+
 const router = require('express').Router()
 
 const db = require('./polaczenie')
 
+/**
+ * Moduł związany z detalami gier
+ * @see module:bd/gra/detale
+ * @name detale
+ */
 const detale = require('./detale');
 
 router.use('/detale', detale);
 
-// SELECT wszystkich gier
+/**
+ * SELECT wszystkich gier
+ * @name gra/ get
+ * @function
+ */
 router.get('/', (req, res) => {
     db.query('SELECT * FROM projekt.gra')
         .then(result => {
@@ -23,7 +37,11 @@ router.get('/', (req, res) => {
         })
 })
 
-// SELECT jednej gry o wybranym id
+/**
+ * SELECT jednej gry o wybranym id
+ * @name gra/:id_gra get
+ * @function
+ */
 router.get('/:id_gra', (req, res) => {
     const { id_gra } = req.params;
 
@@ -45,7 +63,11 @@ router.get('/:id_gra', (req, res) => {
         })
 })
 
-// SELECT :liczba_gier najlepszych gier
+/**
+ * SELECT :liczba_gier najlepszych gier
+ * @name gra/top/:liczba_gier get
+ * @function
+ */
 router.get('/top/:liczba_gier', (req, res) => {
     const { liczba_gier } = req.params;
 
@@ -64,7 +86,14 @@ router.get('/top/:liczba_gier', (req, res) => {
         })
 })
 
-// SELECT gry o tytule zawierającym tytul z ciała żądania
+/**
+ * SELECT gry o tytule zawierającym 'tytul' z ciała żądania.
+ * <br><br>
+ * Tytuł szukanej gry jest przesyłany w ciele POST zamiast jako QueryString, ponieważ wtedy mamy pewność,
+ * że nie będzie problemów ze znakami specjalnymi jak np. '/'
+ * @name gra/tytul post
+ * @function
+ */
 router.post('/tytul', (req, res) => {
     const { tytul } = req.body;
 

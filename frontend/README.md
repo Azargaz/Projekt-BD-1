@@ -2,4 +2,4 @@
 
 Frontend stworzony w React.js w ramach projektu.
 
-Dokumentacja i kod SQL w folderze docs.
+Dokumentacja projektu i kod SQL w folderze docs.

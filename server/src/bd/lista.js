@@ -1,8 +1,19 @@
+/**
+ * Lista, podmoduł modułu Lista, zawiera funkcje obsługujące listy użytkowników
+ * @module bd/uzytkownik/lista
+ * @see module:bd/uzytkownik
+ */
+
 const router = require('express').Router()
 
 const db = require('./polaczenie')
 const auth = require('../utils/authorization')
 
+/**
+ * SELECT gier z listy użytkownika o id równym :id_uzytkownik
+ * @name lista/id/:id_uzytkownik get
+ * @function
+ */
 router.get('/id/:id_uzytkownik', (req, res) => {
     const { id_uzytkownik } = req.params;
 
@@ -21,6 +32,11 @@ router.get('/id/:id_uzytkownik', (req, res) => {
         })
 })
 
+/**
+ * SELECT jedenj gry o id :id_gra z listy użytkownika o id równym :id_uzytkownik
+ * @name lista/id/:id_uzytkownik/:id_gra get
+ * @function
+ */
 router.get('/id/:id_uzytkownik/:id_gra', (req, res) => {
     const { id_uzytkownik, id_gra } = req.params;
 
@@ -43,6 +59,11 @@ router.get('/id/:id_uzytkownik/:id_gra', (req, res) => {
         })
 })
 
+/**
+ * SELECT możliwych statusów gry
+ * @name lista/statusy get
+ * @function
+ */
 router.get('/statusy', (req, res) => {
     db.query("SELECT * FROM projekt.status_gry")
         .then(result => {
@@ -59,6 +80,11 @@ router.get('/statusy', (req, res) => {
         })
 })
 
+/**
+ * INSERT przypisujący gre do listy użytkownika
+ * @name lista/ post
+ * @function
+ */
 router.post('/', auth, (req, res) => {
     const { id_uzytkownik } = req.user;
     const { id_gra, id_status, ocena, data_rozpoczecia, data_ukonczenia } = req.body;
@@ -78,6 +104,11 @@ router.post('/', auth, (req, res) => {
         })
 })
 
+/**
+ * UPDATE gry na liście użytkownika
+ * @name lista/ put
+ * @function
+ */
 router.put('/', auth, (req, res) => {
     const { id_uzytkownik } = req.user;
     const { id_gra, id_status, ocena, data_rozpoczecia, data_ukonczenia } = req.body;
@@ -97,6 +128,11 @@ router.put('/', auth, (req, res) => {
         })
 })
 
+/**
+ * DELETE gry z listy użytkownika
+ * @name lista/ delete
+ * @function
+ */
 router.delete('/', auth, (req, res) => {
     const { id_uzytkownik } = req.user;
     const { id_gra } = req.body;

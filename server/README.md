@@ -2,7 +2,7 @@
 
 Serwer Node.js udostępniający REST API dla projektu.
 
-Dokumentacja i kod SQL w folderze docs.
+Dokumentacja projektu i kod SQL w folderze docs.
 
 #### Uruchamianie serwera
 

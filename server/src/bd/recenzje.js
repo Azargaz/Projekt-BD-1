@@ -1,8 +1,18 @@
+/**
+ * Moduł Recenzje, zawiera funkcje obsługujące recenzje gier
+ * @module bd/recenzje
+ */
+
 const router = require('express').Router()
 
 const db = require('./polaczenie')
 const auth = require('../utils/authorization')
 
+/**
+ * SELECT recenzji wybranej gry o :id_gra konkretnego użytkownika o :id_uzytkownik
+ * @name recenzje/recenzja/:id_uzytkownik/:id_gra get
+ * @function
+ */
 router.get('/recenzja/:id_uzytkownik/:id_gra', (req, res) => {
     const { id_uzytkownik, id_gra } = req.params;
 
@@ -23,6 +33,12 @@ router.get('/recenzja/:id_uzytkownik/:id_gra', (req, res) => {
         })
 })
 
+/**
+ * SELECT recenzji wybranej gry o :id_gra obecnie zalogowanego użytkownika (jego id_uzytkownika jest przekazane w nagłówku "Authorization" żadania, zobacz utils/authorization)
+ * @see module:utils/authorization
+ * @name recenzje/uzytkownik/:id_gra get
+ * @function
+ */
 router.get('/uzytkownik/:id_gra', auth, (req, res) => {
     const { id_gra } = req.params;
     const { id_uzytkownik } = req.user;
@@ -42,6 +58,11 @@ router.get('/uzytkownik/:id_gra', auth, (req, res) => {
         })
 })
 
+/**
+ * SELECT wszystkich recenzji wybranej gry o :id_gra
+ * @name recenzje/gra/:id_gra get
+ * @function
+ */
 router.get('/gra/:id_gra', (req, res) => {
     const { id_gra } = req.params;
 
@@ -60,6 +81,11 @@ router.get('/gra/:id_gra', (req, res) => {
         })
 })
 
+/**
+ * INSERT recenzji dla wybranej gry o :id_gra napisanej przez obecnie zalogowanego użytkownika
+ * @name recenzje/gra/:id_gra post
+ * @function
+ */
 router.post('/gra/:id_gra', auth, (req, res) => {
     const { id_gra } = req.params;
     const { id_uzytkownik } = req.user;

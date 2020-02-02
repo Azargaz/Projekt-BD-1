@@ -1,3 +1,11 @@
+/**
+ * Moduł używany jako middleware w ścieżkach autoryzowanych, udostępnia w argumencie żadania req pole req.user
+ * zawierające informacje o obecnie zalogowanym użytkowniku.
+ * <br><br>
+ * W przypadku braku nagłówka "authorization" lub "x-access-token" middleware ten odmawia dostępu do danego zasobu.
+ * @module utils/authorization
+ */
+
 const jwt = require("jsonwebtoken")
 
 module.exports = (req, res, next) => {

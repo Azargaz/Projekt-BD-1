@@ -1,16 +1,50 @@
+/**
+ * Główny plik zawierający serwer Express i wszystkie jego ścieżki
+ * @module app
+ */
+
 require('dotenv').config()
 
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
+
 const port = 3001
 
+/**
+ * Moduł związany z tabelą Gra
+ * @see module:bd/gra
+ * @name gra
+ */
 const gra = require('./bd/gra')
+
+/**
+ * Moduł związany z tabelą Uzytkownik
+ * @see module:bd/uzytkownik
+ * @name uzytkownik
+ */
 const uzytkownik = require('./bd/uzytkownik')
+
+/**
+ * Moduł związany z tabelą Recenzja
+ * @see module:bd/recenzje
+ * @name recenzje
+ */
 const recenzje = require('./bd/recenzje')
+
+/**
+ * Moduł związany z zarządzaniem tabelami
+ * @see module:bd/admin
+ * @name admin
+ */
 const admin = require('./bd/admin')
 
+/**
+ * Moduł służący jako middleware do autoryzacji.
+ * @see module:utils/authorization
+ * @name auth
+ */
 const auth = require('./utils/authorization')
 
 app.use(cors())
@@ -31,11 +65,11 @@ app.get('/', (req, res) => {
                 "GET /gra/:id_gra",
                 "GET /gra/top/:liczba_gier",
                 "GET /gra/tytul",
-                "GET /gra/najnowsze/:liczba_gier",
                 {
                     detale: [
                         "GET /gra/detale",
-                        "GET /gra/detale/:id_gra"
+                        "GET /gra/detale/string/:id_gra",
+                        "GET /gra/detale/json/:id_gra"
                     ]
                 }
             ],
@@ -55,7 +89,6 @@ app.get('/', (req, res) => {
             ],
             recenzje: [
                 "GET /recenzje",
-                "GET /recenzje/ostatnie",
                 "GET /recenzje/uzytkownik/:id_uzytkownik",
                 "GET /recenzje/gra/:id_gra",
                 "Auth POST /recenzje/gra/:id_gra"
