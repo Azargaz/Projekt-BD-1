@@ -102,7 +102,7 @@
 
 8. #### Zapytania SQL oraz scieżki REST API <a name="SQL_RESTAPI"></a>
 
-    Wszystkie zapytania zawarte są w odpowiednich plikach w folderze SQL, ich działanie jest dokładniej opisane w pliku README folderu SQL.
+    Wszystkie zapytania zawarte są w odpowiednich plikach w folderze SQL, ich działanie jest dokładniej opisane w pliku [README](./SQL/README.html) folderu SQL.
 
     - SQL - funkcje, widoki, wyzwalacze (pliki "funkcje.sql", "widoki.sql" oraz "wyzwalacze.sql"):
         - Najlepsze gry:
@@ -310,3 +310,4 @@
     Inne użyte programy:
     - [SQL Power Architect](http://www.bestofbi.com/page/architect) - narzędzie pozwalające na projektowanie diagramów ERD oraz wygenerowanie kodu SQL tworzącego relacje znajdujące się na stworzonym ERD,
     - [Postman](https://www.getpostman.com/) - aplikacja pozwalająca na wysyłanie żądań HTTP.
+    - [JSDoc](https://jsdoc.app/) - moduł npm pozwalający na generowanie dokumentacji w formie plików HTML.

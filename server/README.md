@@ -6,7 +6,7 @@ Dokumentacja projektu i kod SQL w folderze docs.
 
 #### Uruchamianie serwera
 
-1. Aby uruchomić serwer i poprawnie połączyć się z bazą danych trzeba stworzyć plik .env z następującymi wartościami:
+1. Aby uruchomić serwer i poprawnie połączyć się z bazą danych trzeba stworzyć plik .env z następującymi wartościami (przykładowy plik .example_env):
     ```
     DB_USER='nazwa użytkownika bazy danych'
     DB_USER_PASS='hasło do bazy danych'

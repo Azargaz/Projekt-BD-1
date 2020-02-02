@@ -1,0 +1,7 @@
+DB_USER='nazwa użytkownika bazy danych'
+DB_USER_PASS='hasło do bazy danych'
+DB_HOST='host bazy danych'
+DB_PORT='port bazy danych'
+DB_NAME='nazwa bazy danych'
+
+PRIVATE_KEY='klucz prywatny używany do szyfrowania tokenów JWT, można wpisać cokolwiek'
