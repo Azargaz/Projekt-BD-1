@@ -1,4 +1,4 @@
-### Encyklopedia gier komputerowych - Bazy danych I - Projekt - Hubert Jakubek
+### GRAWEB - Bazy danych I - Projekt - Hubert Jakubek
 
 Serwer Node.js udostępniający REST API dla projektu.
 
@@ -14,10 +14,10 @@ Dokumentacja i kod SQL w folderze docs.
     DB_PORT='port bazy danych'
     DB_NAME='nazwa bazy danych'
 
-    PRIVATE_KEY='klucz prywatny używany do szyfrowania tokenów JWT'
+    PRIVATE_KEY='klucz prywatny używany do szyfrowania tokenów JWT, można wpisać cokolwiek'
     ```
 
-2. Następnie należy wejść do folderu /docs/SQL i wykonać wszystkie pliki .sql w terminalu PostgreSQL.
+2. Następnie należy wejść do folderu /docs/SQL i wykonać wszystkie pliki .sql w terminalu PostgreSQL wykonując plik exec.sql (UWAGA! Polecenia SQL usuwają scheme o nazwie Projekt).
 
 3. Kolejnym krokiem jest pobranie modułów node komendą `npm install`. Po zakończeniu instalacji modułów możemy uruchomić serwer komendą `npm start`.
-Serwer zostanie uruchomiony na porcie `3001`.
+Serwer zostanie uruchomiony domyślnie na porcie `3001`.

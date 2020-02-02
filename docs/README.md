@@ -1,4 +1,4 @@
-﻿### Encyklopedia gier komputerowych - Bazy danych I - Projekt - Hubert Jakubek
+﻿### GRAWEB - Encyklopedia gier komputerowych - Bazy danych I - Projekt - Hubert Jakubek
 
 ### I. Projekt koncepcji, założenia
 
@@ -13,7 +13,7 @@
     - gry komputerowe,
     - gatunki gier,
     - firmy (wydawcy, producenci),
-    - platformy (PC, konsole),
+    - platformy (różne systemy PC, konsole),
     - użytkowników,
     - oraz recenzje napisane przez użytkowników.
 
@@ -24,17 +24,16 @@
     - Dodawanie, usuwanie i modyfikację danych we wszystkich tabelach (operacje dostępne tylko dla użytkowników typu administrator).
     - Po zalogowaniu dodawanie, usuwanie i modyfikację gier znajdujących się na personalnej liście użytkownika.
     - Przeglądanie zawartości personalnej listy dowolnego użytkownika.
-    - Przeglądanie wszystkich gier pogrupowanych według wybranej kategorii (np. według gatunku, czy producenta).
-    - Przeglądanie wszystkich gier posortowanych po atrybutach (np. 100 najwyżej ocenianych gier).
+    - Przeglądanie wszystkich gier posortowanych po atrybutach (np. 10 najwyżej ocenianych gier).
+    - Wyszukiwanie gier po tytule.
 
 3. #### Funkcjonalność bazy danych
 
     - Relacje pozwalające na grupowanie gier według kategorii, np. gry z danego gatunku, od danego producenta, na daną platformę.
     - Relacja powiązująca użytkowników z grami (funkcjonalność personalnej listy).
     - Widoki tworzące różne listy gier (np. najwyżej oceniane gry).
-    - Zapytania tworzące statystki (np. ilość gier, które premierę miały w danym roku),
-    które mogą zostać wykorzystane do stworzenia wykresów.
     - Funkcje pozwalające na wyświetlnie oraz modyfikację listy gier wybranego użytkownika.
+    - Wyzwalacze dbające o spójność danych (szczególnie podczas usuwania rekordów).
 
 ### II. Projekt diagramów
 

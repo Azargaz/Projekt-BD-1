@@ -1,4 +1,4 @@
-### Encyklopedia gier komputerowych - Bazy danych I - Projekt - Hubert Jakubek
+### GRAWEB - Bazy danych I - Projekt - Hubert Jakubek
 
 Frontend stworzony w React.js w ramach projektu.
 
