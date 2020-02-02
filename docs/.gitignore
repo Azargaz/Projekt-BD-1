@@ -1,3 +1,5 @@
 *.architect~
 README.html
 README.pdf
+node_docs
+imgs

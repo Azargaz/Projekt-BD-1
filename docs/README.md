@@ -1,8 +1,31 @@
 ﻿### GRAWEB - Encyklopedia gier komputerowych - Bazy danych I - Projekt - Hubert Jakubek
 
-### I. Projekt koncepcji, założenia
+#### Spis treści
+- [I. Projekt koncepcji](#Projekt_koncepcji)
+    - [1. Temat projektu](#Temat)
+    - [2. Analiza wymagań użytkownika](#Analiza_wymag)
+    - [3. Funkcjonalność bazy danych](#Funkcj_bd)
+- [II. Projekt diagramów](#Projekt_diag)
+    - [4. Diagram ERD](#Diagram_ERD)
+- [III. Projekt logiczny](#Projekt_logiczny)
+    - [5. Tabele, klucze](#Tabele_klucze)
+    - [6. Słowniki danych](#Slowniki)
+    - [7. Analiza postaci normalnej bazy danychh](#Normalizacja)
+    - [8. Zapytania SQL oraz scieżki REST API](#SQL_RESTAPI)
+- [IV. Projekt funkcjonalny](#Projekt_funkcj)
+    - [9. Interfejsy do prezentacji, edycji i obsługi danych](#Interfejsy)
+    - [10. Panel sterowania aplikacji](#Panel)
+- [V. Dokumentacja](#Dok)
+    - [11. Wprowadzanie danych](#Dane)
+    - [12. Dokumentacja użytkownika](#Dok_uzyt)
+    - [13. Dokumentacja techniczna](#Dok_tech)
+    - [14. Użyte technologie](#Technologie)
 
-1. #### Temat projektu
+<br>
+
+### I. Projekt koncepcji, założenia <a name="Projekt_koncepcji"></a>
+
+1. #### Temat projektu <a name="Temat"></a>
 
     Encyklopedia gier komputerowych to zbiór gier, wydawców, producentów, gatunków oraz platform.
     Projekt zawierać będzie również użytkowników. Każdy użytkownik będzie mógł przypisać gry
@@ -17,7 +40,7 @@
     - użytkowników,
     - oraz recenzje napisane przez użytkowników.
 
-2. #### Analiza wymagań użytkownika
+2. #### Analiza wymagań użytkownika <a name="Analiza_wymag"></a>
 
     Baza danych będzie pozwalała użytkownikowi na:
     - Stworzenie konta/Zalogowanie się w celu przeglądania własnej listy gier.
@@ -27,7 +50,7 @@
     - Przeglądanie wszystkich gier posortowanych po atrybutach (np. 10 najwyżej ocenianych gier).
     - Wyszukiwanie gier po tytule.
 
-3. #### Funkcjonalność bazy danych
+3. #### Funkcjonalność bazy danych <a name="Funkcj_bd"></a>
 
     - Relacje pozwalające na grupowanie gier według kategorii, np. gry z danego gatunku, od danego producenta, na daną platformę.
     - Relacja powiązująca użytkowników z grami (funkcjonalność personalnej listy).
@@ -35,17 +58,17 @@
     - Funkcje pozwalające na wyświetlnie oraz modyfikację listy gier wybranego użytkownika.
     - Wyzwalacze dbające o spójność danych (szczególnie podczas usuwania rekordów).
 
-### II. Projekt diagramów
+### II. Projekt diagramów <a name="Projekt_diag"></a>
 
-4. #### Diagram ERD
+4. #### Diagram ERD <a name="Diagram_ERD"></a>
 
     Diagram wykonany z użyciem SQL Power Architect.
 
     ![ERD](./erd.png "Schemat ERD (Ostatnia aktualizacja: 2019-12-27)")
 
-### III. Projekt logiczny
+### III. Projekt logiczny <a name="Projekt_logiczny"></a>
 
-5. #### Tabele, klucze
+5. #### Tabele, klucze <a name="Tabele_klucze"></a>
 
     Relacje w bazie danych encyklopedii gier można podzielić na trzy grupy:
     - Relacje związane z grami:
@@ -64,7 +87,7 @@
 
     Kod SQL tworzący wszystkie tabele zawarte na diagramie oraz odpowiedni Schema znajduje się w pliku "tabele.sql".
 
-6. #### Słowniki danych
+6. #### Słowniki danych <a name="Slowniki"></a>
 
     Projekt zawiera jeden słownik danych, którym jest tabela "Statusy gry". Relacja ta zawiera rekordy opisujące możliwe statusy gry znajdującej się na liście użytkownika. Każdy rekord składa się z id oraz statusu w postaci łańcucha znaków, który powinien opisywać jednym słowem lub krótkim zdaniem status gry.
 
@@ -73,11 +96,13 @@
     2. 'W trakcie' - użytkownik zaczął gre, jednak jej nie ukończył,
     3. 'Zakończona' - użytkownik skończył daną grę i możę ją uznać za zakończoną.
 
-8. #### Analiza postaci normalnej bazy danych
+7. #### Analiza postaci normalnej bazy danych <a name="Normalizacja"></a>
 
-    Baza danych nie musiała być poddawana procesomi dekompozycji, ponieważ wszystkie tabele spełniają trzecią postać normalną 3NF.
+    Baza danych nie musiała być poddawana procesowi dekompozycji, ponieważ wszystkie tabele spełniają trzecią postać normalną 3NF.
 
-9. #### Zapytania SQL oraz scieżki REST API
+8. #### Zapytania SQL oraz scieżki REST API <a name="SQL_RESTAPI"></a>
+
+    Wszystkie zapytania zawarte są w odpowiednich plikach w folderze SQL, ich działanie jest dokładniej opisane w pliku README folderu SQL.
 
     - SQL - funkcje, widoki, wyzwalacze (pliki "funkcje.sql", "widoki.sql" oraz "wyzwalacze.sql"):
         - Najlepsze gry:
@@ -160,24 +185,36 @@
         - PUT /nazwa_tabeli - UPDATE na dowolnej tabeli (poza tabelami Recenzja i Uzytkownik),
         - DELETE /nazwa_tabeli/:id - DELETE rekordu o PK równym "id"
 
-### IV. Projekt funkcjonalny
+### IV. Projekt funkcjonalny <a name="Projekt_funkcj"></a>
 
-10. #### Interfejsy do prezentacji, edycji i obsługi danych
+9. #### Interfejsy do prezentacji, edycji i obsługi danych <a name="Interfejsy"></a>
 
-    Interfejs do obługi danych składa się z dwóch głównym komponentów - aplikacji internetowej klienta typu SPA oraz serwera Node.js udostepniającego REST API.
-    Aplikacja klienta obsługuje dane pośrednio poprzez wykonywanie żadań do serwera, który komunikuję się z bazą danych PostgreSQL i wykonuje do niej zapytania.
+    Interejsem do edycji i obsługi danych jest serwer Node.js, który komunikuje się z bazą danych i wysyła do niej zapytania. 
+    Natomiast w celu prezentacji danych i możliwości wykorzystania funkcjonalności serwera stworzona została aplikacja internetowa klienta typu SPA,
+    która za pomocą żądań HTTP komunikuję się z serwerem poprzez REST API.
 
-11. #### Panel sterowania aplikacji
+10. #### Panel sterowania aplikacji <a name="Panel"></a>
+
+    Panel zarządzania tabelami z poziomu aplikacji jest dostępny tylko dla zalogowanyc użytkowników typu administrator.
+    Panel jest dostępny w prawym górnym rogu interfejsu:
+    
+    <img src="./imgs/panel_zarzadzania.png" alt="obrazek"/>
+
+    Przykładowa strona do zarządzania tabelą:
+
+    <img src="./imgs/tabela_gra.png" alt="obrazek" width="960"/>
+    <img src="./imgs/tabela_gra_dodaj.png" alt="obrazek" width="960"/>
+    <img src="./imgs/tabela_gra_edytuj.png" alt="obrazek" width="960"/>
 
 
+### V. Dokumentacja <a name="Dok"></a>
 
-### V. Dokumentacja
-
-16. #### Wprowadzanie danych
+11. #### Wprowadzanie danych <a name="Dane"></a>
 
     Dane zostały wprowadzone ręcznie, są dostępne do ponownego wprowadzenia w postaci pliku "SQL/test_dane.sql", który zawiera INSERTy z przykładowymi danymi.
+    Niektóre dane (jak zawartość list użytkowników i ich oceny gier) zostały wygenerowane losowo, ale również są zapisane w pliku w tym samym SQL.
 
-17. #### Dokumentacja użytkownika
+12. #### Dokumentacja użytkownika <a name="Dok_uzyt"></a>
 
     Użytkownik ma dostęp do aplikacji klienta w postaci strony typu SPA, która pozwala na prezentację oraz modyfikację danych (o ile pozwalają mu na to jego uprawnienia). W aplikacji mamy trzy typy użytkowników:
     - gość - użytkownik nie uwierzytelniony (nie zalogowany)
@@ -189,13 +226,69 @@
     - zalogowany - dodatkowo może dodawać/usuwać/modyfikować gry na swojej liście,
     - admin - pozwala na dostęp do panelu administratora, w którym mamy dostęp do formularzy dodawania/zmieniania danych oraz tabel wyświetlających zawartości wybranych relacji.
 
-    Przykładowe użycie aplikacji:
+    Przykład użycia aplikacji:
 
-18. #### Dokumentacja techniczna
+    - Po uruchomieniu strony ukaże nam się strona główna:
 
+        <img src="./imgs/strona_glowna.png" alt="obrazek" width="960"/>
 
+    - Najpierw możemy się zalogować klikając odpowiednią ikonę w prawym górnym rogu:
 
-19. #### Użyte technologie
+        <img src="./imgs/zalogujsie.png" alt="obrazek"/>
+
+    - Po naciśnieciu ikony pojawi się ekran logowania, wpisujemy login i hasło, lub wybieramy automatyczne uzupełnienie użytkownika zwykłego/administratora:
+
+        <img src="./imgs/logowanie.png" alt="obrazek" width="960"/>
+
+    - Po zalogowaniu zostaniemy przeniesieni na stronę z listą użytkownika:
+        
+        <img src="./imgs/lista_gier.png" alt="obrazek" width="960"/>
+
+    - Na liście gier możemy edytować oraz usuwać gry z listy, np. możemy zmienić status, datę rozpoczęcia i ukończenia oraz ocenę gry Wiedźmin 3:
+        
+        <img src="./imgs/zmiana_na_liscie.png" alt="obrazek" width="960"/>
+        <img src="./imgs/zmiana_na_liscie_efekt.png" alt="obrazek" width="960"/>
+
+    - Każda gra na liście jest odnośnikiem do strony tejże gry, po naciśnięciu tytułu gry zostaniemy przeniesieni do opisującej ją strony:
+    
+        <img src="./imgs/lista_link_do_gry.png" alt="obrazek" width="960"/>
+        <img src="./imgs/gra.png" alt="obrazek" width="960"/>
+
+    - Jak widać gra nie ma żadnych recenzji, ani opisu; recenzje możemy dodać jako dowolny zalogowany użytkownik klikając ikonę w lewym dolnym rogu w panelu "Twoja lista", ukaże nam się takie okno, które możemy wypełnić:
+
+        <img src="./imgs/recenzja_gry.png" alt="obrazek" width="960"/>
+        <img src="./imgs/recenzja_gry_efekt.png" alt="obrazek" width="960"/>
+
+    - Natomiast aby zmienić opis gry musimy użyc panelu administratora, do którego mamy dostęp w prawym górnym rogu jeśli użyliśmy testowego konta administratora:
+
+        <img src="./imgs/akcje_administratora.png" alt="obrazek"/>
+        <br>
+        <img src="./imgs/panel_administratora.png" alt="obrazek" width="960"/>
+
+    - Z panelu wybieramy zakładkę Tabela Gra, ukaże nam się strona z trzema zakładkami "Wyświetl", "Dodaj" oraz "Edytuj", wybieramy tą ostatnią:
+
+        <img src="./imgs/tabela_gra.png" alt="obrazek" width="960"/>
+        <img src="./imgs/tabela_gra_edytuj.png" alt="obrazek" width="960"/>
+
+    - Wybieramy z menu "Wybierz gre" grę którą chcemy zedytować i wpisujemy w pole Opis jaki nowy opis gry chcemy ustawić:
+
+        <img src="./imgs/tabela_gra_opis.png" alt="obrazek" width="960"/>
+        <img src="./imgs/tabela_gra_opis2.png" alt="obrazek" width="960"/>
+
+    - Wracamy do strony gry, widzimy efekt zmiany opisu:
+    
+        <img src="./imgs/tabela_gra_opis_efekt.png" alt="obrazek" width="960"/>
+
+    - Podobnych zmian możemy dokonać w pozostałych tabelach. Pozatym możemy jeszcze przeglądać wszystkie gry, top 10 czy też wyszukiwać gry po tytule:
+
+        <img src="./imgs/top10.png" alt="obrazek" width="960"/>
+        <img src="./imgs/szukanie.png" alt="obrazek" width="960"/>
+
+13. #### Dokumentacja techniczna <a name="Dok_tech"></a>
+
+    Dokumentacja techniczna serwera Node.js w wersji HTMLowej zawarta jest w folderze [node_docs](./node_docs/index.html).
+
+14. #### Użyte technologie <a name="Technologie"></a>
 
     Projekt będzie składał się z trzech głównych części: 
     - aplikacji internetowej klienta typu Single Page Application, 
@@ -212,7 +305,7 @@
     - [PG](https://node-postgres.com/) - moduł Node pozwalający na połączenie z bazą danych PostgreSQL.
     
     Moduły NPM użyte po stronie klienta i serwera:
-    - [JSON Web Tokens (JWT)](https://www.npmjs.com/package/jsonwebtoken) - moduł pozwalający na wykorzystanie standardu [RFC 7519](https://tools.ietf.org/html/rfc7519) do przesyłania informacji w żądaniach/odpowiedziach HTTP.
+    - [JSON Web Tokens (JWT)](https://www.npmjs.com/package/jsonwebtoken) - moduł pozwalający na wykorzystanie standardu [RFC 7519](https://tools.ietf.org/html/rfc7519) do przesyłania informacji w żądaniach/odpowiedziach HTTP w sposób zakodowany.
 
     Inne użyte programy:
     - [SQL Power Architect](http://www.bestofbi.com/page/architect) - narzędzie pozwalające na projektowanie diagramów ERD oraz wygenerowanie kodu SQL tworzącego relacje znajdujące się na stworzonym ERD,

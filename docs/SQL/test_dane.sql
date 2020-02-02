@@ -266,10 +266,14 @@ INSERT INTO projekt.gra_platforma VALUES
     (16, 13)
 ;
 
+-- Przypisanie gier do odpowiednich serii gier
+
 UPDATE projekt.gra SET id_seria = 1 WHERE id_gra IN (1, 2, 3);
 UPDATE projekt.gra SET id_seria = 2 WHERE id_gra IN (4, 5, 6);
 UPDATE projekt.gra SET id_seria = 3 WHERE id_gra IN (7, 8, 9, 10);
 UPDATE projekt.gra SET id_seria = 4 WHERE id_gra IN (11, 12, 13, 14, 15, 16);
+
+-- Stworzenie przykładowych użytkowników
 
 INSERT INTO projekt.uzytkownik(login, haslo, email, imie, nazwisko, admin) VALUES
     ('jan123', '123456', 'jankowalski@email.com', 'Jan', 'Kowalski', false),
@@ -277,7 +281,9 @@ INSERT INTO projekt.uzytkownik(login, haslo, email, imie, nazwisko, admin) VALUE
     ('admin', 'admin', 'admin@email.com', null, null, true)
 ;
 
--- uzyt, gra, status, ocena, data_roz, data_uk
+-- Losowe przypisanie gier do list powyższych użytkowników
+
+-- id_uzyt, id_gra, status, ocena, data_roz, data_uk
 SELECT * FROM projekt.dodaj_gre_do_listy( 1, 10, 1, null, null, null);
 SELECT * FROM projekt.dodaj_gre_do_listy( 1, 15, 3, 1, null, null);
 SELECT * FROM projekt.dodaj_gre_do_listy( 3, 13, 3, 5, null, null);

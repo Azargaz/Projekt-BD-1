@@ -3,7 +3,7 @@
  * @module bd/polaczenie
  */
 
- const Pool = require('pg').Pool
+const Pool = require('pg').Pool
 const pool = new Pool({
     user: process.env.DB_USER,
     password: process.env.DB_USER_PASS,

@@ -1,11 +1,11 @@
 -- Schema
 
-DROP SCHEMA projekt CASCADE;
+-- DROP SCHEMA projekt CASCADE;
 CREATE SCHEMA projekt;
 
 SET SEARCH_PATH TO projekt;
 
--- Relacje z diagramu ERD
+-- Relacje z diagramu ERD - wygenerowane w SQL Power Architect
 
 
 CREATE SEQUENCE seria_gier_id_seria_seq_1;
