@@ -23,15 +23,11 @@ router.get('/recenzja/:id_uzytkownik/:id_gra', (req, res) => {
         })
 })
 
-router.get('/ostatnie', (req, res) => {
-
-})
-
 router.get('/uzytkownik/:id_gra', auth, (req, res) => {
     const { id_gra } = req.params;
     const { id_uzytkownik } = req.user;
 
-    db.query("SELECT * FROM recenzje_uzytkownicy WHERE id_uzytkownik = $1 AND id_gra = $2", [id_uzytkownik, id_gra])
+    db.query("SELECT * FROM projekt.recenzje_uzytkownicy WHERE id_uzytkownik = $1 AND id_gra = $2", [id_uzytkownik, id_gra])
         .then(result => {
             res.status(201).json(
                 result.rows
@@ -49,7 +45,7 @@ router.get('/uzytkownik/:id_gra', auth, (req, res) => {
 router.get('/gra/:id_gra', (req, res) => {
     const { id_gra } = req.params;
 
-    db.query("SELECT * FROM recenzje_gry WHERE id_gra = $1", [id_gra])
+    db.query("SELECT * FROM projekt.recenzje_gry WHERE id_gra = $1", [id_gra])
         .then(result => {
             res.status(201).json(
                 result.rows

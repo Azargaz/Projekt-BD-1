@@ -8,6 +8,10 @@ router.get('/', (req, res) => {
     })
 })
 
+/*
+    Zapytania INSERT/UPDATE/DELTE dla tabeli Gra
+*/
+
 // INSERT jednej gry razem z przypisaniem wydawców, producentów, gatunków oraz platform
 router.post('/gra', async (req, res) => {
     const { tytul, opis, data_wydania, kategoria_wiekowa, id_seria } = req.body.gra;
@@ -159,6 +163,10 @@ const prepareArrayInsert = (array, queryParams) => {
     }
     return queryText;
 }
+
+/*
+    Poniżej znajdują się zapytania SELECT/INSERT/UPDATE/DELETE dla wszystkich pozostałych tabel.
+*/
 
 router.get('/firma', (req, res) => {
     db.query("SELECT * FROM projekt.firma")
@@ -439,6 +447,14 @@ router.delete('/seria_gier/:id_seria', (req, res) => {
             });
         })
 })
+
+/*
+    Tabele Recenzja i Uzytkownik nie posiadają zapytań UPDATE,
+    nie są to dane które administrator powinien móc zmieniać,
+    co najwyżej usuwać.
+
+    Zapytania INSERT znajdują się w odpowiadających im plikach (uzytkownik.js, recenzje.js).
+*/
 
 router.get('/recenzja', (req, res) => {
     db.query("SELECT * FROM projekt.recenzja")

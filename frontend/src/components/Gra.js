@@ -13,6 +13,9 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+import Divider from '@material-ui/core/Divider';
+import Paper from '@material-ui/core/Paper';
 
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
@@ -42,6 +45,8 @@ function Gra(props) {
         gatunki: "",
         platformy: ""
     })
+
+    const [recenzje, setRecenzje] = useState([])
     
     const [statusy, setStatusy] = useState([]);
 
@@ -65,6 +70,12 @@ function Gra(props) {
     const fetchGraNaLiscie = () => {
         fetchData('GET', `uzytkownik/lista/id/${decodedToken.id_uzytkownik}/${id_gra}`, (json) => {
             setGraNaLiscie(json);
+        });
+    }
+
+    const fetchRecenzje = () => {
+        fetchData('GET', `recenzje/gra/${id_gra}`, (json) => {
+            setRecenzje(json);
         });
     }
 
@@ -95,6 +106,8 @@ function Gra(props) {
             {
                 Authorization: token
             })
+
+            fetchRecenzje();
         });
     }, [id_gra])
 
@@ -111,6 +124,9 @@ function Gra(props) {
             [name]: false
         });
         fetchGraNaLiscie();
+
+        if(name === "recenzja")
+            fetchRecenzje();
     };
 
     const handleDelete = () => {
@@ -135,10 +151,16 @@ function Gra(props) {
                                 </Typography>
                                 <br/>
                                 <Typography color="textSecondary">
-                                    Data wydania: {new Date(gra.data_wydania).toLocaleDateString()}
+                                    Data wydania:
+                                </Typography>
+                                <Typography>
+                                    {new Date(gra.data_wydania).toLocaleDateString()}
                                 </Typography>
                                 <Typography color="textSecondary">
-                                    Kategoria wiekowa: {gra.kategoria_wiekowa}
+                                    Kategoria wiekowa:
+                                </Typography>
+                                <Typography>
+                                    {gra.kategoria_wiekowa}
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -147,19 +169,31 @@ function Gra(props) {
                         <Card>
                             <CardContent>
                                 <Typography color="textSecondary">
-                                    Producenci:<br/>{detale.producenci.producenci_gry}
+                                    Producenci:
+                                </Typography>
+                                <Typography>
+                                    {detale.producenci.producenci_gry}
                                 </Typography>
                                 <br/>
                                 <Typography color="textSecondary">
-                                    Wydawcy:<br/>{detale.wydawcy.wydawcy_gry}
+                                    Wydawcy:
+                                </Typography>
+                                <Typography>
+                                    {detale.wydawcy.wydawcy_gry}
                                 </Typography>
                                 <br/>
                                 <Typography color="textSecondary">
-                                    Gatunki:<br/>{detale.gatunki.gatunki_gry}
+                                    Gatunki:
+                                </Typography>
+                                <Typography>
+                                    {detale.gatunki.gatunki_gry}
                                 </Typography>
                                 <br/>
                                 <Typography color="textSecondary">
-                                    Platformy:<br/>{detale.platformy.platformy_gry}
+                                    Platformy:
+                                </Typography>
+                                <Typography>
+                                    {detale.platformy.platformy_gry}
                                 </Typography>
                                 {gra.seria ? (
                                     <>
@@ -247,12 +281,51 @@ function Gra(props) {
                 </Grid>
             </Grid>
             <Grid item sm={6}>
-                <Typography variant="h5" component="h2">
-                    Opis gry
-                </Typography>
-                <Typography variant="body1" align="justify">
-                    {gra.opis && gra.opis !== "" ? gra.opis : "Brak opisu..."}
-                </Typography>
+                <Box my={5}>
+                    <Typography variant="h5" component="h2">
+                        Opis gry
+                    </Typography>
+                    <Typography variant="body1" align="justify">
+                        {gra.opis && gra.opis !== "" ? gra.opis : "Brak opisu..."}
+                    </Typography>
+                </Box>
+
+                <Divider />
+                <br/>
+                {recenzje.length > 0 ? (
+                    <Box mx={3}>
+                        <Typography variant="h5">
+                            Recenzje
+                        </Typography>
+                    </Box>
+                ) : (
+                    <Box mx={3}>
+                        <Typography variant="h5">
+                            Brak recenzji...
+                        </Typography>
+                    </Box>
+                )}
+                {recenzje.map(recenzja => (
+                    <Paper>
+                        <Box mx={3} my={2}>
+                            <br/>
+                            <Typography variant="h6">
+                                {recenzja.login}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                                Data: {new Date(recenzja.data).toLocaleDateString("pl-PL")}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                                Ocena: {recenzja.ocena}
+                            </Typography>
+                            <br/>
+                            <Typography variant="body1">
+                                {recenzja.tekst}
+                            </Typography>
+                            <br/>
+                        </Box>
+                    </Paper>
+                ))}
 
                 <RecenzjaDodajDialog recenzowanaGra={graNaLiscie} open={open.recenzja} onClose={() => handleClose("recenzja")} onCancel={() => handleClose("recenzja")} />
 

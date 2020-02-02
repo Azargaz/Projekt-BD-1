@@ -87,7 +87,6 @@ router.get('/string/:id_gra', (req, res) => {
         })
 })
 
-
 // SELECT wydawców, producentów, platform i gatunków jednej gry o id_gra = :id_gra w formie tabeli zapisanyc jako JSON
 router.get('/json/:id_gra', (req, res) => {
     let results = {};

@@ -1,6 +1,6 @@
 const defaultErrorCallback = (err) => {};
 
-const apiURL = "http://localhost:3001/";
+let apiURL = "http://localhost:3001/";
 // const apiURL = "http://pascal.fis.agh.edu.pl:3001/";
 
 const fetchData = (method, url, successCallback, errorCallback=defaultErrorCallback, headers={}, body="") => {
@@ -21,3 +21,9 @@ const fetchData = (method, url, successCallback, errorCallback=defaultErrorCallb
 }
 
 export default fetchData;
+
+export const setApiURL = (newURL) => {
+    if(newURL[newURL.length - 1] !== '/')
+        newURL += '/';
+    apiURL = newURL;
+};

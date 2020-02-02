@@ -25,17 +25,6 @@ SELECT g.id_gra, g.tytul, g.data_wydania, g.kategoria_wiekowa, sg.tytul as seria
     ORDER BY srednia_ocen DESC
 ;
 
--- Najnowsze gry
-
-CREATE OR REPLACE VIEW najnowsze_gry
-AS
-SELECT g.id_gra, g.tytul, g.data_wydania, g.kategoria_wiekowa, sg.tytul as seria
-    FROM projekt.gra g 
-    LEFT JOIN projekt.seria_gier sg
-    ON sg.id_seria = g.id_seria
-    ORDER BY 3 DESC
-;
-
 -- Gry wydawców
 
 CREATE OR REPLACE VIEW gry_wydawcy
@@ -140,9 +129,11 @@ SELECT r.id_gra, r.tekst, r.data, r.ocena,
 
 CREATE OR REPLACE VIEW recenzje_gry
 AS
-SELECT r.id_uzytkownik, r.tekst, r.data, r.ocena,
+SELECT u.login, r.id_uzytkownik, r.tekst, r.data, r.ocena,
     g.id_gra, g.tytul
     FROM projekt.recenzja r
     JOIN projekt.gra g
     USING(id_gra)
+    JOIN projekt.uzytkownik u
+    USING (id_uzytkownik)
 ;

@@ -84,23 +84,4 @@ router.post('/tytul', (req, res) => {
 
 })
 
-// SELECT :liczba_gier najnowszych gier
-router.get('/najnowsze/:liczba_gier', (req, res) => {
-    const { liczba_gier } = req.params;
-
-    db.query('SELECT * FROM projekt.najnowsze_gry_limit($1)', [liczba_gier])
-        .then(result => {
-            res.status(201).json(
-                result.rows
-            )
-        })
-        .catch(err => {
-            console.error(err);
-            res.status(500).json({
-                status: "error",
-                error: err.message
-            });
-        })
-})
-
 module.exports = router
